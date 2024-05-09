@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
+import WalletConnectContextProvider from "@/contexts/WalletConnectContext";
 
+const ibmFont = localFont({ src: "../fonts/ibm2.ttf" });
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,7 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={ibmFont.className}>
+        <WalletConnectContextProvider>
+          {children}
+        </WalletConnectContextProvider>
+      </body>
     </html>
   );
 }
