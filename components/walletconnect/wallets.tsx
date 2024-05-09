@@ -24,19 +24,19 @@ const Wallets = () => {
 
   const walletImages = walletsDetails.map((wallet, index) => (
     <div
-      className="border flex items-center gap-10 shadow-[0px_1px_1px_rgba(0,1,2,0.2)] cursor-pointer rounded-xl p-3 transition duration-300 ease-in hover:border-red-600"
+      className="flex items-center h-[70px] bg-[#222222] mb-6 gap-4 cursor-crosshair p-3 button-hover hover:bg-[#333333]"
       onClick={() => getConnectedAddress(wallet.name)}
       key={index}
     >
       <Image
         src={wallet.src}
-        width={50}
-        height={50}
+        width={40}
+        height={40}
         alt={wallet.alt}
-        className=""
+        className="p-1"
       />
       <h4 className="">
-        <span className="capitalize">{wallet.name}</span> Wallet
+        <span className="uppercase text-[#D9D9D9] text-lg">{wallet.name}</span>
       </h4>
     </div>
   ));

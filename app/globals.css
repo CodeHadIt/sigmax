@@ -73,6 +73,43 @@
       color: #666666;
     }
     body {
-      @apply bg-background text-foreground;
+      @apply bg-background text-foreground tracking-wide;
+
     }
   }
+
+  .button-hover {
+      position: relative;
+      overflow: hidden;
+  }
+
+  .button-hover:hover::after {
+      content: ''; 
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: calc(100% - 6px);
+      height: calc(100% - 6px);
+      border-bottom: 3px solid #D9D9D9; 
+      border-right: 3px solid #D9D9D9; 
+      pointer-events: none;
+  }
+
+  .white-border {
+    position: relative;
+    overflow: hidden;
+}
+
+  .white-border:after {
+      content: ''; 
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: calc(100% - 14px);
+      height: calc(100% - 14px);
+      border-bottom: 4px solid #D9D9D9; 
+      border-right: 4px solid #D9D9D9; 
+      pointer-events: none;
+  }
+
+
