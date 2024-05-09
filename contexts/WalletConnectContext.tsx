@@ -35,8 +35,13 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
         let accounts = await window.unisat.requestAccounts();
         setConnectedAddress(accounts[0]);
         setConnectedWallet("unisat");
-      } catch (e) {
-        console.log("connecting to unisat failed");
+      } catch (e: any) {
+        if(e.code === 4001) {
+            alert(e.message);
+        } else {
+            console.log("connecting to unisat failed");
+            alert("error connecting to unisat ");
+        }
       }
     } else {
       alert("Please Install Unisat Wallet");
@@ -59,16 +64,19 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
       setConnectedAddress(addresses.ordinal);
         setConnectedWallet("xverse");
     },
-    onCancel: () => alert("Wallet not connected. User cancelled request."),
+    onCancel: () => alert("Wallet not connected. You cancelled the request."),
   };
 
   const getXverseAddress = async () => {
+    if (typeof window.XverseProviders == "undefined") {
+        alert("Please Install Xverse Wallet");
+    } else {
         try {
-          const response = await getAddress(getAddressOptions);
-          console.log(response, "responseee")
+          await getAddress(getAddressOptions);
         } catch (error: any) {
           alert(`${error.message}`);
         }
+    }
   };
 
   return (

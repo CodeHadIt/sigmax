@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import WalletConnect from '@/components/walletconnect'
 import { WalletConnectContext } from '@/contexts/WalletConnectContext';
 import { WalletContextInterface } from '@/types/wallets';
+import RuneCollectionPlaceholder from '@/components/placeholder';
 
 const WalletTestPage = () => {
 
@@ -10,11 +11,12 @@ const WalletTestPage = () => {
         WalletConnectContext
       ) as WalletContextInterface;
   return (
-    <div>
-        <h1>Hello</h1>
-        <WalletConnect />
-    </div>
-  )
+    <section className="flex flex-col items-center justify-center">
+      <h1>Hello</h1>
+      <RuneCollectionPlaceholder />
+      <WalletConnect />
+    </section>
+  );
 }
 
 export default WalletTestPage

@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={ibmFont.className}>
         <WalletConnectContextProvider>
-          {children}
+          <main className="container max-w-[1200px] pt-16">{children}</main>
         </WalletConnectContextProvider>
       </body>
     </html>
