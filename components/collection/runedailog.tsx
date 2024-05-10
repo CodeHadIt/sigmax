@@ -19,8 +19,8 @@ import { Button } from '../ui/button';
 import { IFees } from '@/types/fees';
 import Fees from './fees';
 
-const RuneDailog = () => {
-    const { runeData, inscriptionData } = useContext(
+const RuneDailog = ({ inscriptionData}: any) => {
+    const { runeData } = useContext(
       WalletConnectContext
     ) as WalletContextInterface;
     const [fees, setFees] = useState<IFees | null>(null);
@@ -42,7 +42,7 @@ const RuneDailog = () => {
             height={135}
             alt={inscriptionData?.inscription_name}
             onClick={() => fetchfees()}
-            className='cursor-pointer'
+            className="cursor-pointer"
           />
         </div>
       </DialogTrigger>

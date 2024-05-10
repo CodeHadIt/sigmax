@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <div className="space-y-10">
       <div className="flex justify-between">
-        <h3>Collections / {inscriptionData?.collection_name}</h3>
+        <h3>Collections / {inscriptionData[0]?.collection_name}</h3>
         <p className="lowercase">{`<${
           connectedAddress?.slice(0, 5) + "..." + connectedAddress?.slice(-5)
         }>`}</p>
@@ -24,15 +24,15 @@ const Header = () => {
         <div className="flex gap-6 justify-between items-center">
           <Image
             className="rounded-full"
-            src={inscriptionData?.metadata.collection_page_img_url}
+            src={inscriptionData[0]?.metadata.collection_page_img_url}
             width={50}
             height={50}
-            alt={inscriptionData?.inscription_name}
+            alt={inscriptionData[0]?.inscription_name}
           />
           <div>
             <div className="flex items-center gap-2">
               <span className="text-white">
-                {inscriptionData?.collection_name}
+                {inscriptionData[0]?.collection_name}
               </span>
               <Image
                 src={badge}

@@ -38,7 +38,7 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
     let collection = details?.data.filter((detail: any) =>
       detail.slug.includes(pathname)
     );
-    setInscriptionData(collection[0]);
+    setInscriptionData(collection);
   }
 
   const getRunes = async (address?: string) => {
