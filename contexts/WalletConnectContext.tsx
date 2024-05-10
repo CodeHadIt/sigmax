@@ -35,8 +35,9 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
   const getInscription = async (address?: string) => {
     const response = await fetch(`/api/inscriptions/${address}`);
     let details = await response.json();
+    console.log(details);
     let collection = details?.data.filter((detail: any) =>
-      detail.slug.includes(pathname)
+      detail.slug && detail.slug.includes(pathname)
     );
     setInscriptionData(collection);
   }
