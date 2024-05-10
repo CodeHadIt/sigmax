@@ -4,16 +4,20 @@ import WalletConnect from '@/components/walletconnect'
 import { WalletConnectContext } from '@/contexts/WalletConnectContext';
 import { WalletContextInterface } from '@/types/wallets';
 import RuneCollectionPlaceholder from '@/components/placeholder';
+import CollectionOverview from '@/components/collection';
 
 const WalletTestPage = () => {
 
-      const { connectedAddress, getConnectedAddress } = useContext(
-        WalletConnectContext
-      ) as WalletContextInterface;
+  const { connectedAddress, inscriptionData, runeData } = useContext(
+    WalletConnectContext
+  ) as WalletContextInterface;
   return (
     <section className="flex flex-col items-center justify-center">
-      <h1>Hello</h1>
-      <RuneCollectionPlaceholder />
+      {inscriptionData && runeData ? (
+        <CollectionOverview />
+      ) : (
+        <RuneCollectionPlaceholder />
+      )}
       <WalletConnect />
     </section>
   );

@@ -19,5 +19,10 @@ export interface WalletContextInterface {
   setConnectedWallet: Dispatch<SetStateAction<connectedWallet>>;
   getConnectedAddress: (wallet: string) => void;
   setConnectedAddress: Dispatch<SetStateAction<string | null>>;
+
+  inscriptionData: any;
+  setInscriptionData: Dispatch<SetStateAction<any>>;
+  runeData: any;
+  setRuneData: Dispatch<SetStateAction<any>>;
 }
 

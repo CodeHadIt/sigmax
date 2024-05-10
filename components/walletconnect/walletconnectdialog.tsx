@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useContext, useState } from "react";
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,12 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
 import Wallets from "./wallets";
 
 import { WalletConnectContext } from "@/contexts/WalletConnectContext";
 import { WalletContextInterface } from "@/types/wallets";
-// { address }: { address: String | null }
 
 interface IProps {
   openDialog: boolean;
@@ -24,19 +22,21 @@ const WalletConnectDialog = ({ openDialog, setOpenDialog }: IProps) => {
 
   const { connectedAddress } = useContext(WalletConnectContext) as WalletContextInterface
   const handleDialog = () => {
-    if (!connectedAddress) {
+    //Unless user connects wallet, dialog pops up
+    if (connectedAddress) {
       setOpenDialog(false);
-      console.log("hello");
     } 
-    
   };
+
+  useEffect(() => {
+    if (connectedAddress) {
+      setOpenDialog(false);
+    }
+  }, [connectedAddress, setOpenDialog]);
 
   return (
     <div className="">
       <Dialog open={openDialog} onOpenChange={handleDialog}>
-        {/* <DialogTrigger>
-        <Button variant="outline">Connect Wallet</Button>
-      </DialogTrigger> */}
         <DialogContent>
           <DialogHeader>
             <DialogTitle>

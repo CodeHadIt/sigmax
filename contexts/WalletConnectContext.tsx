@@ -12,6 +12,8 @@ import {
   getAddress,
 } from "sats-connect";
 
+import { usePathname } from 'next/navigation'
+
 
 export const WalletConnectContext = createContext<WalletContextInterface>(
   {} as WalletContextInterface
@@ -20,6 +22,30 @@ export const WalletConnectContext = createContext<WalletContextInterface>(
 const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children }) => {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
   const [connectedWallet, setConnectedWallet] = useState<connectedWallet>(null);
+
+  const [inscriptionData, setInscriptionData] = useState<any>(
+    null
+  );
+  const [runeData, setRuneData] = useState<any>(
+    null
+  );
+
+  const pathname = usePathname().replace("/", "");
+
+  const getInscription = async (address?: string) => {
+    const response = await fetch(`/api/inscriptions/${address}`);
+    let details = await response.json();
+    let collection = details?.data.filter((detail: any) =>
+      detail.slug.includes(pathname)
+    );
+    setInscriptionData(collection[0]);
+  }
+
+  const getRunes = async (address?: string) => {
+    const response = await fetch(`/api/runes/${address}`);
+    let runeDetails = await response.json();
+    setRuneData(runeDetails.data[0]);    
+  }
 
   const getConnectedAddress = (wallet: string) => {
     if (wallet === "unisat") {
@@ -34,7 +60,10 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
       try {
         let accounts = await window.unisat.requestAccounts();
         setConnectedAddress(accounts[0]);
+        getInscription(accounts[0])
+        getRunes(accounts[0]);
         setConnectedWallet("unisat");
+        
       } catch (e: any) {
         if(e.code === 4001) {
             alert(e.message);
@@ -62,7 +91,9 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
         payment: response.addresses[1].address,
       };
       setConnectedAddress(addresses.ordinal);
-        setConnectedWallet("xverse");
+      getInscription(addresses.ordinal);
+      getRunes(addresses.ordinal);
+      setConnectedWallet("xverse");
     },
     onCancel: () => alert("Wallet not connected. You cancelled the request."),
   };
@@ -87,6 +118,11 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
         setConnectedWallet,
         getConnectedAddress,
         setConnectedAddress,
+
+        inscriptionData,
+        setInscriptionData,
+        runeData,
+        setRuneData,
       }}
     >
       <div>{children}</div>

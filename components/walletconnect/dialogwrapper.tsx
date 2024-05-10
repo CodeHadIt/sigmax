@@ -5,8 +5,6 @@ import WalletConnectDialog from './walletconnectdialog';
 const DialogWrapper = () => {
   const [openDialog, setOpenDialog] = useState<boolean>(true);
 
-
-
   return (
     <div>
       <WalletConnectDialog
