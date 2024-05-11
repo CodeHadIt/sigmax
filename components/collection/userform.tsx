@@ -126,9 +126,9 @@ const UserForm = ({ fees, setFormIsSubmitted }: PageProps) => {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center"
+                  className="flex justify-between"
                 >
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-[80px] h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
+                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Slow</span>
                       <span>{fees?.minimumFee} S/VB</span>
@@ -144,7 +144,7 @@ const UserForm = ({ fees, setFormIsSubmitted }: PageProps) => {
                     </FormControl>
                   </FormItem>
 
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-[80px] h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
+                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Avg</span>
                       <span>{fees?.economyFee} S/VB</span>
@@ -160,7 +160,7 @@ const UserForm = ({ fees, setFormIsSubmitted }: PageProps) => {
                     </FormControl>
                   </FormItem>
 
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-[80px] h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
+                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] button-hover hover:bg-[#333333]">
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Fast</span>
                       <span>{fees?.fastestFee} S/VB</span>

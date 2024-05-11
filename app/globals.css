@@ -80,36 +80,38 @@
 
   .button-hover {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
   }
 
   .button-hover:hover::after {
-      content: ''; 
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: calc(100% - 6px);
-      height: calc(100% - 6px);
-      border-bottom: 3px solid #D9D9D9; 
-      border-right: 3px solid #D9D9D9; 
-      pointer-events: none;
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: calc(100% - 5px);
+    height: calc(100% - 5px);
+    border-bottom: 3px solid #D9D9D9;
+    border-right: 3px solid #D9D9D9;
+    pointer-events: none;
+    box-sizing: content-box;
   }
 
   .white-border {
     position: relative;
-    overflow: hidden;
-}
+    overflow: visible;
+  }
 
   .white-border:after {
-      content: ''; 
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: calc(100% - 14px);
-      height: calc(100% - 14px);
-      border-bottom: 4px solid #D9D9D9; 
-      border-right: 4px solid #D9D9D9; 
-      pointer-events: none;
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    border-bottom: 4px solid #D9D9D9;
+    border-right: 4px solid #D9D9D9;
+    pointer-events: none;
+    box-sizing: content-box;
   }
 
 
