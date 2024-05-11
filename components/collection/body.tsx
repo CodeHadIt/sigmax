@@ -9,9 +9,9 @@ const Body = () => {
       WalletConnectContext
     ) as WalletContextInterface;
   return (
-    <div className="space-y-7">
+    <div className="space-y-7 text-lg">
       <span>Select An Item to Stake Your runes With.</span>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 justify-between after:flex-auto">
         {inscriptionData.map((data: any, index: any) => (
           <RuneDailog key={index} inscriptionData={data} />
         ))}

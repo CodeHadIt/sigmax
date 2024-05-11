@@ -32,12 +32,17 @@ const RuneDailog = ({ inscriptionData}: any) => {
         const data = await response.json();
         setFees(data)
     }
+
+    const numberPattern = /\d+/;
+    const extractedNumber = inscriptionData?.metadata.name.match(numberPattern);
+    const sigmaNo = extractedNumber ? parseInt(extractedNumber[0]) : null;
+    const sigmaPath = "https://ordinalsigmax.com/osx-gifs2/" + sigmaNo + ".gif";
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="p-4 bg-[#222222] max-w-[138px]">
+        <div className="max-w-[138px] button-hover">
           <Image
-            src={inscriptionData?.metadata.collection_page_img_url}
+            src={sigmaPath}
             width={135}
             height={135}
             alt={inscriptionData?.inscription_name}
@@ -47,18 +52,18 @@ const RuneDailog = ({ inscriptionData}: any) => {
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[725px]">
-        <div className="flex justify-between items-center ">
+        <div className="flex justify-between items-center text-md">
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span>{inscriptionData?.inscription_name}</span>
-              <span className="text-sm">{`${inscriptionData?.inscription_id.slice(
+              <span className="lowercase">{`${inscriptionData?.inscription_id.slice(
                 0,
                 5
               )}...${inscriptionData?.inscription_id.slice(-5)}`}</span>
             </div>
 
             <Image
-              src={inscriptionData?.metadata.collection_page_img_url}
+              src={sigmaPath}
               width={240}
               height={240}
               alt={inscriptionData?.inscription_name}
@@ -73,7 +78,7 @@ const RuneDailog = ({ inscriptionData}: any) => {
           <div className="flex gap-6 flex-col">
             <span className="self-end">{`<ESC>`}</span>
             <div className="space-y-2">
-              <Label htmlFor="amount" className="text-right text-white">
+              <Label htmlFor="amount" className="text-right text-[#d9d9d9]">
                 Enter The Amount Of Runes To Stake
               </Label>
               <div className="relative">
@@ -90,20 +95,20 @@ const RuneDailog = ({ inscriptionData}: any) => {
               <div className="flex justify-between">
                 <span>Available</span>
                 <div className="space-x-2">
-                  <span className="text-white">{runeData?.total_balance}</span>
-                  <span>🍕</span>
+                  <span className="text-[#d9d9d9]">{runeData?.total_balance}</span>
+                  <span>Σ</span>
                 </div>
               </div>
             </div>
 
             <div className="">
-              <span className="text-white">Select A Fee Rate</span>
+              <span className="text-[#d9d9d9]">Select A Fee Rate</span>
               <div className="">
                 <Fees fees={fees} />
               </div>
             </div>
 
-            <Button type="submit">Stake</Button>
+            <Button type="submit" className="button-hover">Stake</Button>
           </div>
         </div>
       </DialogContent>

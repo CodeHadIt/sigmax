@@ -3,14 +3,14 @@
 import React from 'react'
 import Image from "next/image";
 
-import avatar from "/public/images/avatars/osx-logo.gif"
-import badge from "/public/images/avatars/osx-logo.gif"
+import avatar from "/public/images/avatars/Ellipse 191.png"
+import badge from "/public/images/avatars/Verified Badge.png"
 
 const Header = () => {
   return (
     <div className="space-y-10">
       <div className="flex justify-between">
-        <h3>Collections / Ordinal SigmaX</h3>
+        <h3>Collections / Pizza Ninjas</h3>
         <p className="lowercase">{`<bc1pp...10kxc>`}</p>
       </div>
 
@@ -27,7 +27,7 @@ const Header = () => {
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-white">Ordinal SigmaX</span>
+              <span className="text-white">Pizza Ninjas</span>
               <Image
                 src={badge}
                 width={10}
@@ -40,10 +40,10 @@ const Header = () => {
         </div>
 
         <div>
-          <span className="text-white">The.Sigma.Stone</span>
+          <span className="text-white">Bullish.Bitcoin.Pizza.Ninjas</span>
           <div className="space-x-2">
             <span className="text-white">123,000,000</span>
-            <span>Σ</span>
+            <span>🍕</span>
           </div>
         </div>
       </div>

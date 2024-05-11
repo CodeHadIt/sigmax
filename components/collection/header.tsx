@@ -1,5 +1,6 @@
 "use client";
 import React, { useContext } from "react";
+import Link from 'next/link';
 import Image from "next/image";
 import badge from "/public/images/avatars/Verified Badge.png";
 import { WalletConnectContext } from "@/contexts/WalletConnectContext";
@@ -14,24 +15,25 @@ const Header = () => {
   return (
     <div className="space-y-10">
       <div className="flex justify-between">
-        <h3>Collections / {inscriptionData[0]?.collection_name}</h3>
-        <p className="lowercase">{`<${
+        <h3 className="text-xl">
+          <Link href="/"> Collections </Link>/ {inscriptionData[0]?.collection_name}</h3>
+        <p className="lowercase text-xl">{`<${
           connectedAddress?.slice(0, 5) + "..." + connectedAddress?.slice(-5)
         }>`}</p>
       </div>
 
-      <div className="white-border p-8 flex justify-between items-center bg-[#111111] min-w-[1020px]">
+      <div className="white-border text-xl p-8 flex justify-between items-center bg-[#111111] min-w-[1020px]">
         <div className="flex gap-6 justify-between items-center">
           <Image
             className="rounded-full"
             src={inscriptionData[0]?.metadata.collection_page_img_url}
-            width={50}
-            height={50}
+            width={64}
+            height={64}
             alt={inscriptionData[0]?.inscription_name}
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-white">
+              <span className="text-[#D9D9D9]">
                 {inscriptionData[0]?.collection_name}
               </span>
               <Image
@@ -41,15 +43,15 @@ const Header = () => {
                 alt="verification_badge"
               />
             </div>
-            <span className="text-white">9 Items</span>
+            <span className="text-[#D9D9D9]">{inscriptionData.length} Items</span>
           </div>
         </div>
 
         <div>
-          <span className="text-white">{runeData?.spaced_rune_name}</span>
+          <span className="text-[#D9D9D9]">{runeData?.spaced_rune_name}</span>
           <div className="space-x-2">
-            <span className="text-white">{runeData?.total_balance}</span>
-            <span>🍕</span>
+            <span className="text-[#D9D9D9]">{runeData?.total_balance}</span>
+            <span>Σ</span>
           </div>
         </div>
       </div>

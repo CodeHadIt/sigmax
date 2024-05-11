@@ -44,14 +44,14 @@ const WalletConnectDialog = ({ openDialog, setOpenDialog }: IProps) => {
             </DialogTitle>
             <DialogDescription>
               <p className="text-lg pb-6 leading-tight text-[#666666]">
-                {`Choose How You Want To Connect. If You Don't Have A Wallet, You Can Select A Provider And Create One.`}
+                {`Choose A Wallet To Connect With`}
               </p>
             </DialogDescription>
           </DialogHeader>
           <Wallets />
           <div className="text-lg pt-6 leading-tight">
-            <p className="pb-5">{`By connecting your wallet you acknowledge that selling either the staked Runes or the attached Ordinal will result in the sale of both, as staking binds them together.`}</p>
-            <p>{`By connecting your wallet you acknowledge that unstaking is in development and therefore currently unavailable.`}</p>
+            <p className="pb-5">{`Warning: Selling either the staked Runes or the attached Ordinal will result in the sale of both, as staking binds them together.`}</p>
+            <p>{`Warning: Unstaking is in development and not currently available.`}</p>
           </div>
         </DialogContent>
       </Dialog>
