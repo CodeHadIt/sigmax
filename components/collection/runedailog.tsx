@@ -1,29 +1,19 @@
 'use client'
-import React, { useContext, useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { WalletConnectContext } from '@/contexts/WalletConnectContext';
-import { WalletContextInterface } from '@/types/wallets';
 import Image from 'next/image';
-import { Button } from '../ui/button';
+import { useState } from 'react';
+import UserForm from './userform';
 
 import { IFees } from '@/types/fees';
-import Fees from './fees';
+import StakingScreen from './stakingscreen';
 
 const RuneDailog = ({ inscriptionData}: any) => {
-    const { runeData } = useContext(
-      WalletConnectContext
-    ) as WalletContextInterface;
     const [fees, setFees] = useState<IFees | null>(null);
+    const [formIsSubmitted, setFormIsSubmitted] = useState<boolean>(false);
 
     const fetchfees = async () => {
         const response = await fetch(
@@ -51,9 +41,9 @@ const RuneDailog = ({ inscriptionData}: any) => {
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[725px]">
-        <div className="flex justify-between items-center text-md">
-          <div className="space-y-3">
+      <DialogContent className="sm:max-w-[665px]">
+        <div className="flex justify-between gap-6 items-center text-md">
+          <div className="space-y-3 ">
             <div className="flex justify-between items-center">
               <span>{inscriptionData?.inscription_name}</span>
               <span className="lowercase">{`${inscriptionData?.inscription_id.slice(
@@ -75,40 +65,13 @@ const RuneDailog = ({ inscriptionData}: any) => {
             </div>
           </div>
 
-          <div className="flex gap-6 flex-col">
+          <div className="flex space-y-3 flex-col">
             <span className="self-end">{`<ESC>`}</span>
-            <div className="space-y-2">
-              <Label htmlFor="amount" className="text-right text-[#d9d9d9]">
-                Enter The Amount Of Runes To Stake
-              </Label>
-              <div className="relative">
-                <Input
-                  placeholder="E.G 69,420.69"
-                  id="amount"
-                  className="min-w-[300px]"
-                />
-                <span className="absolute top-[25%] left-[88%] text-white cursor-pointer">
-                  Max
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Available</span>
-                <div className="space-x-2">
-                  <span className="text-[#d9d9d9]">{runeData?.total_balance}</span>
-                  <span>Σ</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="">
-              <span className="text-[#d9d9d9]">Select A Fee Rate</span>
-              <div className="">
-                <Fees fees={fees} />
-              </div>
-            </div>
-
-            <Button type="submit" className="button-hover">Stake</Button>
+            {formIsSubmitted ? (
+              <StakingScreen />
+            ) : (
+              <UserForm fees={fees} setFormIsSubmitted={setFormIsSubmitted} />
+            )}
           </div>
         </div>
       </DialogContent>

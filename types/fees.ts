@@ -1,7 +1,7 @@
 export interface IFees {
-    economyFee: number,
-    fastestFee: number,
-    halfHourFee: number,
-    hourFee: number,
-    minimumFee: number,
+    economyFee: number | undefined,
+    fastestFee: number | undefined,
+    halfHourFee: number | undefined,
+    hourFee: number | undefined,
+    minimumFee: number | undefined,
 }

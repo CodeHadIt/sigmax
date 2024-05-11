@@ -13,7 +13,7 @@ const WalletTestPage = () => {
   ) as WalletContextInterface;
   return (
     <section className="flex flex-col items-center justify-center">
-      {inscriptionData && runeData ? (
+      {inscriptionData && runeData && connectedAddress ? (
         <CollectionOverview />
       ) : (
         <RuneCollectionPlaceholder />

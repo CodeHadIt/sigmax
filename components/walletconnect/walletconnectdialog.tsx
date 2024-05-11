@@ -31,6 +31,8 @@ const WalletConnectDialog = ({ openDialog, setOpenDialog }: IProps) => {
   useEffect(() => {
     if (connectedAddress) {
       setOpenDialog(false);
+    } else {
+      setOpenDialog(true);
     }
   }, [connectedAddress, setOpenDialog]);
 

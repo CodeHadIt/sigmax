@@ -5,6 +5,7 @@ import Image from "next/image";
 import badge from "/public/images/avatars/Verified Badge.png";
 import { WalletConnectContext } from "@/contexts/WalletConnectContext";
 import { WalletContextInterface } from "@/types/wallets";
+import AddressToggle from "./addresstoggle";
 
 const Header = () => {
 
@@ -16,10 +17,14 @@ const Header = () => {
     <div className="space-y-10">
       <div className="flex justify-between">
         <h3 className="text-xl">
-          <Link href="/"> Collections </Link>/ {inscriptionData[0]?.collection_name}</h3>
-        <p className="lowercase text-xl">{`<${
-          connectedAddress?.slice(0, 5) + "..." + connectedAddress?.slice(-5)
-        }>`}</p>
+          <Link href="/"> Collections </Link>/{" "}
+          {inscriptionData[0]?.collection_name}
+        </h3>
+        {connectedAddress ? (
+          <AddressToggle />
+        ) : (
+          <p className="lowercase text-xl">{`<bc1pp...10kxc>`}</p>
+        )}
       </div>
 
       <div className="white-border text-xl p-8 flex justify-between items-center bg-[#111111] min-w-[1020px]">
@@ -43,7 +48,9 @@ const Header = () => {
                 alt="verification_badge"
               />
             </div>
-            <span className="text-[#D9D9D9]">{inscriptionData.length} Items</span>
+            <span className="text-[#D9D9D9]">
+              {inscriptionData.length} Items
+            </span>
           </div>
         </div>
 
