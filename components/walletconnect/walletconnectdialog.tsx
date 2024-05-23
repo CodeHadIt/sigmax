@@ -1,4 +1,4 @@
-"use client";
+"";
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import {
   Dialog,
@@ -41,17 +41,17 @@ const WalletConnectDialog = ({ openDialog, setOpenDialog }: IProps) => {
       <Dialog open={openDialog} onOpenChange={handleDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              <h3 className="text-lg text-[#D9D9D9] tracking-wide">Connect Wallet</h3>
-            </DialogTitle>
-            <DialogDescription>
-              <p className="text-lg pb-6 leading-tight text-[#666666]">
+            {/* <DialogTitle>
+              <span className="text-base text-[#D9D9D9] tracking-wide">Connect Wallet</span>
+            </DialogTitle> */}
+            {/* <DialogDescription>
+              <span className="text-base pb-6 leading-tight text-[#666666]">
                 {`Choose A Wallet To Connect With`}
-              </p>
-            </DialogDescription>
+              </span>
+            </DialogDescription> */}
           </DialogHeader>
           <Wallets />
-          <div className="text-lg pt-6 leading-tight">
+          <div className="text-base pt-6 leading-tight">
             <p className="pb-5">{`Warning: Selling either the staked Runes or the attached Ordinal will result in the sale of both, as staking binds them together.`}</p>
             <p>{`Warning: Unstaking is in development and not currently available.`}</p>
           </div>

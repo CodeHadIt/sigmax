@@ -1,4 +1,4 @@
-'use client'
+
 import React from 'react'
 import { placeholderRunes } from '@/data/placeholders'
 import Image from 'next/image'

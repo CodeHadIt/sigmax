@@ -4,10 +4,10 @@ export const GET = async (req: NextRequest, { params }: any) => {
   const address = params.address;
   try {
     const response = await fetch(
-      `https://api.bestinslot.xyz/v3/wallet/inscriptions?address=${address}&sort_by=inscr_num&order=desc&offset=0&count=2000&exclude_brc20=true&cursed_only=false`,
+      `https://api-mainnet.magiceden.dev/v2/ord/btc/tokens?limit=100&collectionSymbol=ordinalsigmax&ownerAddress=${address}`,
       {
         headers: {
-          "x-api-key": process.env.API_KEY as string,
+          Authorization: `Bearer ${process.env.API_KEY}` as string,
         },
       }
     );

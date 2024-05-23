@@ -1,15 +1,19 @@
-'use client'
 import { WalletConnectContext } from "@/contexts/WalletConnectContext";
 import { WalletContextInterface } from "@/types/wallets";
-import { useContext } from 'react';
-import RuneDailog from "./runedailog";
+import { useContext } from "react";
+import dynamic from "next/dynamic";
+// import RuneDailog from "";
+const RuneDailog = dynamic(() => import("./runedailog"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const Body = () => {
-    const { connectedAddress, runeData, inscriptionData } = useContext(
-      WalletConnectContext
-    ) as WalletContextInterface;
+  const { inscriptionData } = useContext(
+    WalletConnectContext
+  ) as WalletContextInterface;
+
   return (
-    <div className="space-y-7 text-lg">
+    <div className="space-y-7 text-base">
       <span>Select An Item to Stake Your runes With.</span>
       <div className="grid grid-cols-7 gap-4">
         {inscriptionData.map((data: any, index: any) => (
@@ -18,6 +22,6 @@ const Body = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Body
+export default Body;

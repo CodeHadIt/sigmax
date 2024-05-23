@@ -1,5 +1,5 @@
 "use client";
-import { FC, createContext, useEffect, useState } from "react";
+import { FC, createContext, useState } from "react";
 import {
   walletContextProviderProps,
   WalletContextInterface,
@@ -12,41 +12,41 @@ import {
   getAddress,
 } from "sats-connect";
 
-import { usePathname } from 'next/navigation'
-
-
 export const WalletConnectContext = createContext<WalletContextInterface>(
   {} as WalletContextInterface
 );
 
-const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children }) => {
+const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
+  children,
+}) => {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const [connectedPubkey, setConnectedPubkey] = useState<string | null>(null);
+  const [connectedTaprootAddress, setConnectedTaprootAddress] = useState<
+    string | null
+  >(null);
+  const [connectedTaprootPubkey, setConnectedTaprootPubkey] = useState<
+    string | null
+  >(null);
   const [connectedWallet, setConnectedWallet] = useState<connectedWallet>(null);
 
-  const [inscriptionData, setInscriptionData] = useState<any>(
-    null
-  );
-  const [runeData, setRuneData] = useState<any>(
-    null
-  );
-
-  const pathname = usePathname().replace("/", "");
+  const [inscriptionData, setInscriptionData] = useState<any>(null);
+  const [runeData, setRuneData] = useState<any>(null);
 
   const getInscription = async (address?: string) => {
     const response = await fetch(`/api/inscriptions/${address}`);
     let details = await response.json();
-    console.log(details);
-    let collection = details?.data.filter((detail: any) =>
-      detail.slug && detail.slug.includes(pathname)
+    let collection = details?.tokens.filter(
+      (detail: any) =>
+        detail.collectionSymbol && detail.collectionSymbol.includes("sigmax")
     );
     setInscriptionData(collection);
-  }
+  };
 
   const getRunes = async (address?: string) => {
     const response = await fetch(`/api/runes/${address}`);
-    let runeDetails = await response.json();
-    setRuneData(runeDetails.data[0]);    
-  }
+    let runeData = await response.json();
+    setRuneData(runeData);
+  };
 
   const getConnectedAddress = (wallet: string) => {
     if (wallet === "unisat") {
@@ -60,17 +60,18 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
     if (typeof window.unisat !== "undefined") {
       try {
         let accounts = await window.unisat.requestAccounts();
+        let pubkey = await window.unisat.getPublicKey();
         setConnectedAddress(accounts[0]);
-        getInscription(accounts[0])
+        getInscription(accounts[0]);
         getRunes(accounts[0]);
+        setConnectedPubkey(pubkey);
         setConnectedWallet("unisat");
-        
       } catch (e: any) {
-        if(e.code === 4001) {
-            alert(e.message);
+        if (e.code === 4001) {
+          alert(e.message);
         } else {
-            console.log("connecting to unisat failed");
-            alert("error connecting to unisat ");
+          console.log("connecting to unisat failed");
+          alert("error connecting to unisat ");
         }
       }
     } else {
@@ -91,7 +92,12 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
         ordinal: response.addresses[0].address,
         payment: response.addresses[1].address,
       };
-      setConnectedAddress(addresses.ordinal);
+      setConnectedAddress(addresses.payment);
+      setConnectedPubkey(response.addresses[1].publicKey);
+
+      setConnectedTaprootAddress(addresses.ordinal);
+      setConnectedTaprootPubkey(response.addresses[0].publicKey);
+
       getInscription(addresses.ordinal);
       getRunes(addresses.ordinal);
       setConnectedWallet("xverse");
@@ -101,29 +107,31 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({ children
 
   const getXverseAddress = async () => {
     if (typeof window.XverseProviders == "undefined") {
-        alert("Please Install Xverse Wallet");
+      alert("Please Install Xverse Wallet");
     } else {
-        try {
-          await getAddress(getAddressOptions);
-        } catch (error: any) {
-          alert(`${error.message}`);
-        }
+      try {
+        await getAddress(getAddressOptions);
+      } catch (error: any) {
+        alert(`${error.message}`);
+      }
     }
   };
 
   return (
     <WalletConnectContext.Provider
       value={{
-        connectedAddress,
         connectedWallet,
-        setConnectedWallet,
-        getConnectedAddress,
-        setConnectedAddress,
-
+        connectedAddress,
+        connectedPubkey,
+        connectedTaprootAddress,
+        connectedTaprootPubkey,
         inscriptionData,
-        setInscriptionData,
         runeData,
+        setInscriptionData,
+        setConnectedWallet,
+        setConnectedAddress,
         setRuneData,
+        getConnectedAddress,
       }}
     >
       <div>{children}</div>

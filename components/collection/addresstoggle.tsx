@@ -1,4 +1,4 @@
-'use client'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { WalletConnectContext } from "@/contexts/WalletConnectContext";
 import { WalletContextInterface } from "@/types/wallets";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 
 
 const AddressToggle = () => {
@@ -24,13 +24,13 @@ const AddressToggle = () => {
       onOpenChange={() => setOpenDropdown(false)}
     >
       <DropdownMenuTrigger onMouseEnter={() => setOpenDropdown(true)} asChild>
-        <p className="lowercase text-xl">{`<${
+        <p className="lowercase text-base">{`<${
           connectedAddress?.slice(0, 5) + "..." + connectedAddress?.slice(-5)
         }>`}</p>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         onMouseLeave={() => setOpenDropdown(false)}
-        className="bg-[#222222] cursor-pointer rounded-none border-none text-white button-hover"
+        className="bg-[#222222] cursor-pointer rounded-none text-white border-[#222222] hover:border hover:border-[#FFE297] hover:border-1"
       >
         <DropdownMenuItem
           onClick={() => setConnectedAddress(null)}
