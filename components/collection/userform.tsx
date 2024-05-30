@@ -1,6 +1,6 @@
 ("");
 
-import React, { Dispatch, SetStateAction, useContext } from 'react'
+import React, { Dispatch, SetStateAction, useContext, useState } from 'react'
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,6 +29,8 @@ interface PageProps {
   loading: boolean;
 }
 
+type feeOptions = "slow" | "average" | "fast" | "none";
+
 const FormSchema = z
   .object({
     runeBalance: z.coerce.number().optional(),
@@ -45,10 +47,13 @@ const FormSchema = z
     path: ["stakeAmount"],
   });
 
+
 const UserForm = ({ fees, handleStake, loading }: PageProps) => {
   const { runeData } = useContext(
     WalletConnectContext
   ) as WalletContextInterface;
+
+  const [selectedFee, setSelectedFee] = useState<feeOptions>("none")
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,6 +68,7 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
     const { stakeAmount, fee } = data;
     handleStake(stakeAmount, fee);
   };
+
 
   return (
     <Form {...form}>
@@ -127,7 +133,11 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
                   defaultValue={field.value}
                   className="flex justify-between"
                 >
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297]">
+                  <FormItem
+                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                      selectedFee === "slow" && "bg-[#FFE297]"
+                    }`}
+                  >
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Slow</span>
                       <span>{fees?.hourFee} S/VB</span>
@@ -138,12 +148,17 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
                         className="w-full h-[50px] rounded-none border-none"
                         onClick={() => {
                           form.setValue("fee", fees?.hourFee);
+                          setSelectedFee("slow");
                         }}
                       />
                     </FormControl>
                   </FormItem>
 
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297]">
+                  <FormItem
+                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                      selectedFee === "average" && "bg-[#FFE297]"
+                    }`}
+                  >
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Avg</span>
                       <span>{fees?.halfHourFee} S/VB</span>
@@ -154,12 +169,17 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
                         className="w-full h-[50px] rounded-none border-none"
                         onClick={() => {
                           form.setValue("fee", fees?.halfHourFee);
+                          setSelectedFee("average");
                         }}
                       />
                     </FormControl>
                   </FormItem>
 
-                  <FormItem className="flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297]">
+                  <FormItem
+                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                      selectedFee === "fast" && "bg-[#FFE297]"
+                    }`}
+                  >
                     <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                       <span>Fast</span>
                       <span>{fees?.fastestFee} S/VB</span>
@@ -170,6 +190,7 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
                         className="w-full h-[50px] rounded-none border-none"
                         onClick={() => {
                           form.setValue("fee", fees?.fastestFee);
+                          setSelectedFee("fast");
                         }}
                       />
                     </FormControl>

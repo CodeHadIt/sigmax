@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { Rune } from "@/types";
+import { PartnerCollections } from "@/data/collections";
 // import { Transaction } from "@unisat/wallet-sdk/lib/transaction";
 
 export const GET = async (req: NextRequest, { params }: any) => {
@@ -18,11 +19,20 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const jsonRes = await response.json();
     const runeList = jsonRes?.data.list.length ? jsonRes.data.list : null;
 
-    const sigmaXRune = runeList.filter(
-      (r: Rune) => r.runeid === process.env.RUNE_ID
-    );
+    const rune = runeList.filter((runes: any) => PartnerCollections.some(collection => collection.rune_id === runes.runeid) );
 
-    const data = sigmaXRune.length ? sigmaXRune[0] : null;
+    if(rune.length) {
+      return NextResponse.json(rune, { status: 200 });
+    } else {
+      return NextResponse.json(null, { status: 200 });
+    }
+
+    // const sigmaXRune = runeList.filter(
+    //   (r: Rune) => r.runeid === process.env.RUNE_ID
+    // );
+
+    // const data = sigmaXRune.length ? sigmaXRune[0] : null;
+    const data = runeList[0];
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {

@@ -35,17 +35,21 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
   const getInscription = async (address?: string) => {
     const response = await fetch(`/api/inscriptions/${address}`);
     let details = await response.json();
-    let collection = details?.tokens.filter(
-      (detail: any) =>
-        detail.collectionSymbol && detail.collectionSymbol.includes("sigmax")
-    );
-    setInscriptionData(collection);
+    console.log({details, address})
+    // let collection = details?.tokens.filter(
+    //   (detail: any) =>
+    //     detail.collectionSymbol && detail.collectionSymbol.includes("sigmax")
+    // );
+    setInscriptionData(details?.tokens);
   };
 
   const getRunes = async (address?: string) => {
     const response = await fetch(`/api/runes/${address}`);
     let runeData = await response.json();
+
+    console.log(runeData)
     setRuneData(runeData);
+    
   };
 
   const getConnectedAddress = (wallet: string) => {
@@ -62,8 +66,8 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
         let accounts = await window.unisat.requestAccounts();
         let pubkey = await window.unisat.getPublicKey();
         setConnectedAddress(accounts[0]);
-        getInscription(accounts[0]);
-        getRunes(accounts[0]);
+        await getInscription(accounts[0]);
+        await getRunes(accounts[0]);
         setConnectedPubkey(pubkey);
         setConnectedWallet("unisat");
       } catch (e: any) {

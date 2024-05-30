@@ -1,4 +1,4 @@
-"";
+'use client'
 import React, { useContext } from "react";
 import Link from 'next/link';
 import Image from "next/image";
@@ -7,6 +7,8 @@ import { WalletConnectContext } from "@/contexts/WalletConnectContext";
 import { WalletContextInterface } from "@/types/wallets";
 import AddressToggle from "./addresstoggle";
 import Logo from "/public/images/logo.png"
+import { PartnerCollections } from "@/data/collections";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
 
@@ -14,23 +16,25 @@ const Header = () => {
     WalletConnectContext
   ) as WalletContextInterface;
 
+
+  //Add more properties to the partner collections and we do away with the need for accessing the first item in the array.
+  //Although, it is perfectly fine since the collections will all be the very same.
+  
+  const pathName = usePathname().replace("/", "");
+  const collectionDetails = PartnerCollections.find((collection: any) => collection.slug === pathName)
+  
+
   return (
     <div className="space-y-10 ">
       <div className="flex grid grid-cols-3">
         <div className="flex justify-start">
           <h3 className="text-base">
-            Collections / {" "}
-            {inscriptionData[0]?.collection.name}
+            Collections / {inscriptionData[0]?.collection.name}
           </h3>
         </div>
         <div className="flex justify-center">
-          <Link href="/" className="cursor-pointer"> 
-            <Image
-              src={Logo}
-              width={144}
-              height={31}
-              alt="Runestake Logo"
-            />
+          <Link href="/" className="cursor-pointer">
+            <Image src={Logo} width={144} height={31} alt="Runestake Logo" />
           </Link>
         </div>
         <div className="flex justify-end">
@@ -70,11 +74,23 @@ const Header = () => {
         </div>
 
         <div>
-          <span className="text-[#FFE297]">{runeData?.spacedRune}</span>
-          <div className="space-x-2 flex justify-end">
-            <span className="text-[#FFE297] ">{runeData?.amount}</span>
-            <span>Σ</span>
-          </div>
+          {runeData ? (
+            <>
+              <span className="text-[#FFE297]">{runeData?.spacedRune}</span>
+              <div className="space-x-2 flex justify-end">
+                <span className="text-[#FFE297] ">{runeData?.amount}</span>
+                <span>Σ</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="text-[#FFE297]">N/A</span>
+              <div className="space-x-2 flex justify-end">
+                <span className="text-[#FFE297] ">0</span>
+                <span>N/A</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
