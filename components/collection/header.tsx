@@ -79,7 +79,8 @@ const Header = () => {
               <span className="text-[#FFE297]">{runeData?.spacedRune}</span>
               <div className="space-x-2 flex justify-end">
                 <span className="text-[#FFE297] ">{runeData?.amount}</span>
-                <span>Σ</span>
+                <span>{runeData?.symbol}</span>
+                {/* <span>Σ</span> */}
               </div>
             </>
           ) : (

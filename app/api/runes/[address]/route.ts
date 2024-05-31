@@ -22,7 +22,7 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const rune = runeList.filter((runes: any) => PartnerCollections.some(collection => collection.rune_id === runes.runeid) );
 
     if(rune.length) {
-      return NextResponse.json(rune, { status: 200 });
+      return NextResponse.json(rune[0], { status: 200 });
     } else {
       return NextResponse.json(null, { status: 200 });
     }
