@@ -461,23 +461,28 @@ const RuneDailog = ({ inscriptionData }: any) => {
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[665px]">
-        
-
         <div className="flex grid grid-cols-2 gap-x-6 gap-y-2">
           <div className="">
             <div className="flex justify-between">
               <span>{inscriptionData?.meta.name}</span>
-              <Link href={ordinalPath} target="_blank" className="cursor-pointer">
+              <Link
+                href={ordinalPath}
+                target="_blank"
+                className="cursor-pointer"
+              >
                 <span className="lowercase hover:text-[#FFE297]">
                   {`${inscriptionData?.id.slice(
-                  0,
-                  5
-                )}...${inscriptionData?.id.slice(-5)}`}</span>
+                    0,
+                    5
+                  )}...${inscriptionData?.id.slice(-5)}`}
+                </span>
               </Link>
             </div>
           </div>
           <div className="">
-            <DialogClose><span className="fixed top-10 right-0 pr-10  hover:text-[#FFE297]">{`<ESC>`}</span></DialogClose>
+            <DialogClose>
+              <span className="fixed top-10 right-0 pr-10  hover:text-[#FFE297]">{`<ESC>`}</span>
+            </DialogClose>
           </div>
           <div className="">
             <Image
@@ -506,9 +511,7 @@ const RuneDailog = ({ inscriptionData }: any) => {
               <CurrentStaked inscriptionId={inscriptionData?.id} />
             </div>
           </div>
-          
         </div>
-              
 
         {/* <div className="flex justify-between gap-6 items-center text-base">
           <div className="flex space-y-3 flex-col">
@@ -544,8 +547,6 @@ const RuneDailog = ({ inscriptionData }: any) => {
             )}
           </div>
         </div> */}
-
-        
       </DialogContent>
     </Dialog>
   );
