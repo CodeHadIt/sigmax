@@ -28,6 +28,7 @@ import { U128, U32, U64 } from "big-varuint-js";
 import { InscriptionUtxoDetail, TransactionData } from "@/types/transaction";
 import { BitcoinNetworkType, signTransaction } from "sats-connect";
 import CurrentStaked from "./CurrentStaked";
+import { usePathname } from "next/navigation";
 
 const RuneDailog = ({ inscriptionData }: any) => {
   const {
@@ -54,9 +55,13 @@ const RuneDailog = ({ inscriptionData }: any) => {
 
   const numberPattern = /\d+/;
   const extractedNumber = inscriptionData?.meta.name.match(numberPattern);
+  const pathName = usePathname().replace("/", "");
   const sigmaNo = extractedNumber ? parseInt(extractedNumber[0]) : null;
   const sigmaPath = "https://ordinalsigmax.com/osx-gifs2/" + sigmaNo + ".gif";
+  const rugsPath = "https://ordinalsigmax.com/rugs/" + sigmaNo + ".png";
   const ordinalPath = "https://ordinals.com/inscription/" + inscriptionData?.id;
+
+  const imagePath = pathName === "sigmax" ? sigmaPath : pathName === "rugs" ? rugsPath : "";
 
   const createPSBT = async (transactionDetail: TransactionData) => {
     const toSignInputsForUnisat = [];
@@ -446,7 +451,7 @@ const RuneDailog = ({ inscriptionData }: any) => {
       <DialogTrigger asChild>
         <div className="max-w-[138px]">
           <Image
-            src={sigmaPath}
+            src={imagePath}
             width={135}
             height={135}
             alt={inscriptionData?.meta.name}
@@ -476,7 +481,7 @@ const RuneDailog = ({ inscriptionData }: any) => {
           </div>
           <div className="">
             <Image
-              src={sigmaPath}
+              src={imagePath}
               width={240}
               height={240}
               className="w-full"

@@ -22,6 +22,8 @@ import { WalletConnectContext } from '@/contexts/WalletConnectContext';
 
 import { IFees } from "@/types/fees";
 
+import { PartnerCollections } from "@/data/collections";
+import { usePathname } from "next/navigation";
 
 interface PageProps {
   fees: IFees | null;
@@ -55,10 +57,15 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
 
   const [selectedFee, setSelectedFee] = useState<feeOptions>("none")
 
+  const pathName = usePathname().replace("/", "");
+  const collectionDetails = PartnerCollections.find((collection: any) => collection.slug === pathName)
+
+  const runeBalance = runeData?.utxos.reduce((accumulator, utxo) => accumulator + utxo.balance, 0);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      runeBalance: runeData?.amount,
+      runeBalance: runeBalance,
       stakeAmount: undefined,
       fee: 0,
     },
@@ -69,6 +76,7 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
     handleStake(stakeAmount, fee);
   };
 
+  
 
   return (
     <Form {...form}>
@@ -100,7 +108,7 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
                 <span
                   className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
                   onClick={() =>
-                    form.setValue("stakeAmount", Number(runeData?.amount))
+                    form.setValue("stakeAmount", Number(runeBalance))
                   }
                 >
                   Max
@@ -109,8 +117,8 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
               <div className="flex justify-between">
                 <span>Available</span>
                 <div className="space-x-2">
-                  <span className="">{runeData?.amount}</span>
-                  <span>Σ</span>
+                  <span className="">{runeBalance}</span>
+                  <span>{collectionDetails?.rune_symbol}</span>
                 </div>
               </div>
 

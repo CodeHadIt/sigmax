@@ -22,14 +22,15 @@ const Header = () => {
   
   const pathName = usePathname().replace("/", "");
   const collectionDetails = PartnerCollections.find((collection: any) => collection.slug === pathName)
-  
+
+  const runeBalance = runeData?.utxos.reduce((accumulator, utxo) => accumulator + utxo.balance, 0);
 
   return (
     <div className="space-y-10 ">
       <div className="flex grid grid-cols-3">
         <div className="flex justify-start">
           <h3 className="text-base">
-            Collections / {inscriptionData[0]?.collection.name}
+            Collections / {collectionDetails?.collection_name}
           </h3>
         </div>
         <div className="flex justify-center">
@@ -58,7 +59,7 @@ const Header = () => {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[#FFE297]">
-                {inscriptionData[0]?.collection.name}
+                {collectionDetails?.collection_name}
               </span>
               <Image
                 src={badge}
@@ -76,10 +77,10 @@ const Header = () => {
         <div>
           {runeData ? (
             <>
-              <span className="text-[#FFE297]">{runeData?.spacedRune}</span>
+              <span className="text-[#FFE297]">{collectionDetails?.rune_name}</span>
               <div className="space-x-2 flex justify-end">
-                <span className="text-[#FFE297] ">{runeData?.amount}</span>
-                <span>{runeData?.symbol}</span>
+                <span className="text-[#FFE297] ">{runeBalance}</span>
+                <span>{collectionDetails?.rune_symbol}</span>
                 {/* <span>Σ</span> */}
               </div>
             </>
