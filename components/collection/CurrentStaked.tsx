@@ -3,9 +3,10 @@ import openAPI from "@/services/openAPI";
 
 interface PageProps {
   inscriptionId: string;
+  currentStake?: string;
 }
 
-const CurrentStaked = ({ inscriptionId }: PageProps) => {
+const CurrentStaked = ({ inscriptionId, currentStake }: PageProps) => {
   const [currentStaked, setCurrentStaked] = useState("");
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const CurrentStaked = ({ inscriptionId }: PageProps) => {
     // getCurrentStaking();
   }, []);
 
-  return <div className="">Currently staked: {currentStaked}</div>;
+  return <div className="">Currently staked: {currentStake}</div>;
 };
 
 export default CurrentStaked;

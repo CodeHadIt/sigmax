@@ -30,7 +30,12 @@ import { BitcoinNetworkType, signTransaction } from "sats-connect";
 import CurrentStaked from "./CurrentStaked";
 import { usePathname } from "next/navigation";
 
-const RuneDailog = ({ inscriptionData }: any) => {
+interface DialogProps {
+  inscriptionData: any;
+  runeBalance?: string;
+}
+
+const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
   const {
     connectedAddress,
     runeData,
@@ -508,7 +513,7 @@ const RuneDailog = ({ inscriptionData }: any) => {
           </div>
           <div className="">
             <div className="">
-              <CurrentStaked inscriptionId={inscriptionData?.id} />
+              <CurrentStaked inscriptionId={inscriptionData?.id} currentStake={runeBalance} />
             </div>
           </div>
         </div>

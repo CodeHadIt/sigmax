@@ -23,7 +23,7 @@ const Body = () => {
           const hasUtxo = runeData?.utxos.find((utxo: any) => utxo.location === data.output)
           return hasUtxo ? (
             <div className="relative">
-              <RuneDailog key={index} inscriptionData={data} />
+              <RuneDailog key={index} inscriptionData={data} runeBalance={hasUtxo.balance} />
               <Image src={stakedIcon} alt="staking_icon" className="absolute top-3 right-3" />
             </div>
           ) : (
