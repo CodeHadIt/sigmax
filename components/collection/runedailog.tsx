@@ -465,7 +465,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[665px]">
+      <DialogContent className="sm:max-w-[765px]">
         <div className="flex grid grid-cols-2 gap-x-6 gap-y-2">
           <div className="">
             <div className="flex justify-between">
@@ -507,13 +507,17 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
                   fees={fees}
                   handleStake={handleStake}
                   loading={loading}
+                  inscriptionData={inscriptionData}
                 />
               )}
             </div>
           </div>
           <div className="">
             <div className="">
-              <CurrentStaked inscriptionId={inscriptionData?.id} currentStake={runeBalance} />
+              <CurrentStaked
+                inscriptionId={inscriptionData?.id}
+                currentStake={runeBalance}
+              />
             </div>
           </div>
         </div>

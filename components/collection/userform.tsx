@@ -23,15 +23,21 @@ import { WalletConnectContext } from '@/contexts/WalletConnectContext';
 import { IFees } from "@/types/fees";
 
 import { PartnerCollections } from "@/data/collections";
+import StakeConfirmation from './stakeConfirmation';
 import { usePathname } from "next/navigation";
 
 interface PageProps {
   fees: IFees | null;
   handleStake: Function;
   loading: boolean;
+  inscriptionData: any;
 }
 
 type feeOptions = "slow" | "average" | "fast" | "none";
+export type formData = {
+  stakeAmount: number;
+  fee: number;
+};
 
 const FormSchema = z
   .object({
@@ -50,17 +56,29 @@ const FormSchema = z
   });
 
 
-const UserForm = ({ fees, handleStake, loading }: PageProps) => {
+const UserForm = ({
+  fees,
+  handleStake,
+  loading,
+  inscriptionData,
+}: PageProps) => {
   const { runeData } = useContext(
     WalletConnectContext
   ) as WalletContextInterface;
 
-  const [selectedFee, setSelectedFee] = useState<feeOptions>("none")
+  const [selectedFee, setSelectedFee] = useState<feeOptions>("none");
+  const [hasClickedConfirm, setHasClickedConfirm] = useState(false);
+  const [formData, setFormData] = useState<formData | null>(null);
 
   const pathName = usePathname().replace("/", "");
-  const collectionDetails = PartnerCollections.find((collection: any) => collection.slug === pathName)
+  const collectionDetails = PartnerCollections.find(
+    (collection: any) => collection.slug === pathName
+  );
 
-  const runeBalance = runeData?.utxos.reduce((accumulator, utxo) => accumulator + utxo.balance, 0);
+  const runeBalance = runeData?.utxos.reduce(
+    (accumulator, utxo) => accumulator + utxo.balance,
+    0
+  );
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -73,152 +91,172 @@ const UserForm = ({ fees, handleStake, loading }: PageProps) => {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     const { stakeAmount, fee } = data;
-    handleStake(stakeAmount, fee);
+    setFormData({ stakeAmount, fee });
+    setHasClickedConfirm(true);
+    // handleStake(stakeAmount, fee);
   };
 
-  
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full h-full flex flex-col justify-between"
-      >
-        <FormField
-          control={form.control}
-          name="stakeAmount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel
-                htmlFor="stakeAmount"
-                className="text-right text-[#FFE297] my-[-2px]"
-              >
-                Enter The Amount Of Runes To Stake
-              </FormLabel>
-              <div className="relative">
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="E.G 69,420.69"
-                    id="stakeAmount"
-                    className="w-full]"
-                    {...field}
-                  />
-                </FormControl>
-                <span
-                  className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
-                  onClick={() =>
-                    form.setValue("stakeAmount", Number(runeBalance))
-                  }
-                >
-                  Max
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Available</span>
-                <div className="space-x-2">
-                  <span className="">{runeBalance}</span>
-                  <span>{collectionDetails?.rune_symbol}</span>
-                </div>
-              </div>
-
-              <FormMessage className="text-[12px]" />
-            </FormItem>
-          )}
+    <div className="">
+      {hasClickedConfirm ? (
+        <StakeConfirmation
+          handleStake={handleStake}
+          formData={formData}
+          inscriptionData={inscriptionData}
+          confirmAction={setHasClickedConfirm}
         />
-
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="text-[#FFE297]">
-                Select A Fee Rate
-              </FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex justify-between"
-                >
-                  <FormItem
-                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                      selectedFee === "slow" && "bg-[#FFE297]"
-                    }`}
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full h-full flex flex-col justify-between"
+          >
+            <FormField
+              control={form.control}
+              name="stakeAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    htmlFor="stakeAmount"
+                    className="text-right text-[#FFE297] my-[-2px]"
                   >
-                    <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                      <span>Slow</span>
-                      <span>{fees?.hourFee} S/VB</span>
-                    </FormLabel>
-                    <FormControl className="z-10 cursor-pointer">
-                      <RadioGroupItem
-                        value="slow"
-                        className="w-full h-[50px] rounded-none border-none"
-                        onClick={() => {
-                          form.setValue("fee", fees?.hourFee);
-                          setSelectedFee("slow");
-                        }}
+                    Enter The Amount Of Runes To Stake
+                  </FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="E.G 69,420.69"
+                        id="stakeAmount"
+                        className="w-full]"
+                        {...field}
                       />
                     </FormControl>
-                  </FormItem>
+                    <span
+                      className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
+                      onClick={() =>
+                        form.setValue("stakeAmount", Number(runeBalance))
+                      }
+                    >
+                      Max
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Available</span>
+                    <div className="space-x-2">
+                      <span className="">{runeBalance}</span>
+                      <span>{collectionDetails?.rune_symbol}</span>
+                    </div>
+                  </div>
 
-                  <FormItem
-                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                      selectedFee === "average" && "bg-[#FFE297]"
-                    }`}
-                  >
-                    <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                      <span>Avg</span>
-                      <span>{fees?.halfHourFee} S/VB</span>
-                    </FormLabel>
-                    <FormControl className="z-10 cursor-pointer">
-                      <RadioGroupItem
-                        value="average"
-                        className="w-full h-[50px] rounded-none border-none"
-                        onClick={() => {
-                          form.setValue("fee", fees?.halfHourFee);
-                          setSelectedFee("average");
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <FormMessage className="text-[12px]" />
+                </FormItem>
+              )}
+            />
 
-                  <FormItem
-                    className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                      selectedFee === "fast" && "bg-[#FFE297]"
-                    }`}
-                  >
-                    <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                      <span>Fast</span>
-                      <span>{fees?.fastestFee} S/VB</span>
-                    </FormLabel>
-                    <FormControl className="z-10 cursor-pointer focus:bg-[#D9D9D9}">
-                      <RadioGroupItem
-                        value="fast"
-                        className="w-full h-[50px] rounded-none border-none"
-                        onClick={() => {
-                          form.setValue("fee", fees?.fastestFee);
-                          setSelectedFee("fast");
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel className="text-[#FFE297]">
+                    Select A Fee Rate
+                  </FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex justify-between"
+                    >
+                      <FormItem
+                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                          selectedFee === "slow" && "bg-[#FFE297]"
+                        }`}
+                      >
+                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
+                          <span>Slow</span>
+                          <span>{fees?.hourFee} S/VB</span>
+                        </FormLabel>
+                        <FormControl className="z-10 cursor-pointer">
+                          <RadioGroupItem
+                            value="slow"
+                            className="w-full h-[50px] rounded-none border-none"
+                            onClick={() => {
+                              form.setValue("fee", fees?.hourFee);
+                              setSelectedFee("slow");
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
 
-              <Button
-                type="submit"
-                className="button-hover w-full cursor-pointer"
-              >
-                {loading ? "Staking..." : "Stake"}
-              </Button>
+                      <FormItem
+                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                          selectedFee === "average" && "bg-[#FFE297]"
+                        }`}
+                      >
+                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
+                          <span>Avg</span>
+                          <span>{fees?.halfHourFee} S/VB</span>
+                        </FormLabel>
+                        <FormControl className="z-10 cursor-pointer">
+                          <RadioGroupItem
+                            value="average"
+                            className="w-full h-[50px] rounded-none border-none"
+                            onClick={() => {
+                              form.setValue("fee", fees?.halfHourFee);
+                              setSelectedFee("average");
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+                      <FormItem
+                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
+                          selectedFee === "fast" && "bg-[#FFE297]"
+                        }`}
+                      >
+                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
+                          <span>Fast</span>
+                          <span>{fees?.fastestFee} S/VB</span>
+                        </FormLabel>
+                        <FormControl className="z-10 cursor-pointer focus:bg-[#D9D9D9}">
+                          <RadioGroupItem
+                            value="fast"
+                            className="w-full h-[50px] rounded-none border-none"
+                            onClick={() => {
+                              form.setValue("fee", fees?.fastestFee);
+                              setSelectedFee("fast");
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="submit"
+                      className="button-hover w-full cursor-pointer"
+                    >
+                      {loading ? "Staking..." : "Stake"}
+                    </Button>
+                    <Button
+                      className="w-full hover:bg-unset hover:text-unset"
+                      disabled
+                    >
+                      Unstake
+                    </Button>
+                  </div>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      )}
+    </div>
   );
 };
 
