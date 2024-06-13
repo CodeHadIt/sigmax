@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     siteName: "sitename",
     type: "website",
     //edit previous 3 fields
+    title: "RuneStake",
+    description: "Stake Runes on Ordinals",
     images: [
       {
         url: "/public/images/twittercard.png",
@@ -29,6 +31,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@OrdinalSigmaX",
     creator: "@OrdinalSigmaX",
+    title: "RuneStake",
+    description: "Stake Runes on Ordinals",
     images: {
       url: "/public/images/twittercard.png",
       alt: "OSX Preview Image",
