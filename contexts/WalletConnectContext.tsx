@@ -115,7 +115,7 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
       };
       console.log(addresses);
 
-      setConnectedAddress(addresses.payment);
+      setConnectedAddress(addresses.ordinal);
       setConnectedPubkey(response.addresses[1].publicKey);
 
       setConnectedTaprootAddress(addresses.ordinal);

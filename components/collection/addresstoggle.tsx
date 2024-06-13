@@ -30,7 +30,7 @@ const AddressToggle = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         onMouseLeave={() => setOpenDropdown(false)}
-        className="bg-[#222222] cursor-pointer rounded-none text-white border-[#222222] hover:border hover:border-[#FFE297] hover:border-1"
+        className="bottom-[10%] relative bg-[#222222] cursor-pointer rounded-none text-white border-[#222222] hover:border hover:border-[#FFE297] hover:border-1"
       >
         <DropdownMenuItem
           onClick={() => setConnectedAddress(null)}
