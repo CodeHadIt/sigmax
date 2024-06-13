@@ -3,6 +3,8 @@ import React, { Dispatch, SetStateAction } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { formData } from "./userform";
+import { usePathname } from "next/navigation";
+import { PartnerCollections } from "@/data/collections";
 
 interface PageProps {
   handleStake: Function;
@@ -17,6 +19,13 @@ const StakeConfirmation = ({
   inscriptionData,
   confirmAction,
 }: PageProps) => {
+
+
+  const pathName = usePathname().replace("/", "");
+  const collectionDetails = PartnerCollections.find(
+    (collection: any) => collection.slug === pathName
+  );
+
   const handleStaking = () => {
     const { stakeAmount, fee } = formData;
     handleStake(stakeAmount, fee);
@@ -24,17 +33,14 @@ const StakeConfirmation = ({
 
   return (
     <div className="w-full h-full flex flex-col justify-between">
-      <span className="text-[#FFE297]">
-        Staking Transaction Summary
-      </span>
+      <span className="text-[#FFE297]">Staking Transaction Summary</span>
       <div className="space-y-2">
         <Input
           type="text"
-          placeholder={inscriptionData?.meta.name}
+          placeholder={`${inscriptionData?.meta.name} ${formData.stakeAmount} ${collectionDetails.rune_symbol}`}
           id="stakeAmount"
           className="w-full]"
           readOnly
-          //   value={inscriptionData?.meta.name}
         />
         <div className="">
           <span className="font-bold">Network Fees: </span>
