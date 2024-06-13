@@ -20,16 +20,23 @@ const Body = () => {
       <span>Select An Item to Stake Your runes With.</span>
       <div className="grid grid-cols-7 gap-4">
         {inscriptionData?.map((data: any, index: any) => {
-          const hasUtxo = runeData?.utxos.find((utxo: any) => utxo.location === data.output)
+          const hasUtxo = runeData?.utxos.find(
+            (utxo: any) => utxo.location === data.output
+          );
           return hasUtxo ? (
-            <div className="relative">
-              <RuneDailog key={index} inscriptionData={data} runeBalance={hasUtxo.balance} />
-              <Image src={stakedIcon} alt="staking_icon" className="absolute top-3 right-3" />
+            <div className="relative" key={index}>
+              <RuneDailog
+                inscriptionData={data}
+                runeBalance={hasUtxo.balance}
+              />
+              <Image
+                src={stakedIcon}
+                alt="staking_icon"
+                className="absolute top-3 right-3"
+              />
             </div>
           ) : (
-            <>
-              <RuneDailog key={index} inscriptionData={data} />
-            </>
+            <RuneDailog key={index} inscriptionData={data} />
           );
         })}
       </div>

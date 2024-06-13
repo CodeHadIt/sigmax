@@ -42,7 +42,7 @@ export type formData = {
 const FormSchema = z
   .object({
     runeBalance: z.coerce.number().optional(),
-    stakeAmount: z.coerce.number().min(1, {
+    stakeAmount: z.coerce.number().gt(0, {
       message: "Amount must not be empty",
     }),
     fee: z.coerce.number().optional(),
@@ -98,7 +98,7 @@ const UserForm = ({
 
 
   return (
-    <div className="">
+    <div className="w-full h-full flex flex-col justify-between">
       {hasClickedConfirm ? (
         <StakeConfirmation
           handleStake={handleStake}
@@ -136,7 +136,7 @@ const UserForm = ({
                     <span
                       className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
                       onClick={() =>
-                        form.setValue("stakeAmount", Number(runeBalance))
+                        form.setValue("stakeAmount", Number(runeBalance/10**collectionDetails?.rune_decimals))
                       }
                     >
                       Max
@@ -145,7 +145,7 @@ const UserForm = ({
                   <div className="flex justify-between">
                     <span>Available</span>
                     <div className="space-x-2">
-                      <span className="">{runeBalance}</span>
+                      <span className="">{runeBalance/10**collectionDetails?.rune_decimals}</span>
                       <span>{collectionDetails?.rune_symbol}</span>
                     </div>
                   </div>

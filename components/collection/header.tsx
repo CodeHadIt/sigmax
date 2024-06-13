@@ -79,7 +79,7 @@ const Header = () => {
             <>
               <span className="text-[#FFE297]">{collectionDetails?.rune_name}</span>
               <div className="space-x-2 flex justify-end">
-                <span className="text-[#FFE297] ">{runeBalance}</span>
+                <span className="text-[#FFE297] ">{runeBalance/10**collectionDetails?.rune_decimals}</span>
                 <span>{collectionDetails?.rune_symbol}</span>
                 {/* <span>Σ</span> */}
               </div>

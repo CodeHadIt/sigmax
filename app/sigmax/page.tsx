@@ -13,7 +13,7 @@ const WalletTestPage = () => {
 
   return (
     <section className="flex flex-col items-center justify-center">
-      {inscriptionData && connectedAddress ? (
+      {inscriptionData.length && connectedAddress ? (
         <CollectionOverview />
       ) : (
         <RuneCollectionPlaceholder />

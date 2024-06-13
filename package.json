@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@exodus/bitcoin-wallet-standard-features": "^0.0.1",
+    "@exodus/bitcoin-wallet-standard-react": "^0.0.0",
     "@hookform/resolvers": "^3.3.4",
+    "@next/third-parties": "^14.2.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
@@ -18,6 +21,7 @@
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@unisat/wallet-sdk": "^1.6.2",
+    "@wallet-standard/react": "^0.1.4",
     "big-integer": "^1.6.52",
     "big-varuint-js": "^0.2.1",
     "class-variance-authority": "^0.7.0",
@@ -25,7 +29,7 @@
     "cors-anywhere": "^0.4.4",
     "decimal.js": "^10.4.3",
     "lucide-react": "^0.378.0",
-    "next": "14.2.3",
+    "next": "^14.2.4",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",

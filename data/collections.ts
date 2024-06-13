@@ -4,13 +4,12 @@ export const PartnerCollections = [
     collection_name: "Ordinal SigmaX",
     collection_symbol: "ordinalsigmax",
     rune_name: "THE•SIGMA•STONE",
-    // rune_fullname:"RUNESXBITCOIN",
-    rune_fullname: "RSICGENESISRUNE",
+    rune_fullname: "THESIGMASTONE",
     rune_symbol: "Σ",
-    rune_id: "840000:28",
+    rune_id: "840000:60",
+    rune_decimals: 11,
     image_path: "/sigma",
   },
-
   {
     slug: "rugs",
     collection_name: "Rug Lords",

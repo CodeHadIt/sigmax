@@ -23,11 +23,11 @@ const StakeConfirmation = ({
   };
 
   return (
-    <div className="space-y-16 w-full">
-      <span className="text-right text-[#FFE297]">
+    <div className="w-full h-full flex flex-col justify-between">
+      <span className="text-[#FFE297]">
         Staking Transaction Summary
       </span>
-      <div className="space-y-4">
+      <div className="space-y-2">
         <Input
           type="text"
           placeholder={inscriptionData?.meta.name}

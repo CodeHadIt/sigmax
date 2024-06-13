@@ -1,17 +1,29 @@
 
 
-import React from 'react'
+import React, { useContext } from 'react'
 import Image from "next/image";
 
 import avatar from "/public/images/avatars/osx-logo.gif"
 import badge from "/public/images/avatars/osx-logo.gif"
+import { WalletConnectContext } from "@/contexts/WalletConnectContext";
+import { WalletContextInterface } from "@/types/wallets";
+import AddressToggle from "./../collection/addresstoggle";
 
 const Header = () => {
+  const { connectedAddress} = useContext(
+    WalletConnectContext
+  ) as WalletContextInterface;
+
+
   return (
     <div className="space-y-10">
       <div className="flex justify-between">
         <h3>Collections / Ordinal SigmaX</h3>
-        <p className="lowercase">{`<bc1pp...10kxc>`}</p>
+        {connectedAddress ? (
+            <AddressToggle />
+          ) : (
+            <p className="lowercase text-base">{`<bc1pp...10kxc>`}</p>
+          )}
       </div>
 
       <div
@@ -35,14 +47,14 @@ const Header = () => {
                 alt="verification_badge"
               />
             </div>
-            <span className="text-white">9 Items</span>
+            <span className="text-white">0 Items</span>
           </div>
         </div>
 
         <div>
           <span className="text-white">The.Sigma.Stone</span>
           <div className="space-x-2">
-            <span className="text-white">123,000,000</span>
+            <span className="text-white">0</span>
             <span>Σ</span>
           </div>
         </div>

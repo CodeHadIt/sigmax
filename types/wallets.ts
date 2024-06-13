@@ -4,7 +4,7 @@ export type walletContextProviderProps = {
   children: ReactNode;
 };
 
-export type connectedWallet = "unisat" | "xverse" | null;
+export type connectedWallet = "unisat" | "xverse" | "Magic Eden";
 
 export interface WalletContextInterface {
   connectedWallet: connectedWallet;

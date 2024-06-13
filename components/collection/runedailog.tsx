@@ -3,18 +3,18 @@ import {
   DialogContent,
   DialogTrigger,
   DialogClose,
-} from "@/components/ui/dialog";
-import Image from "next/image";
-import Link from "next/link";
-import UserForm from "./userform";
-import StakingScreen from "./stakingscreen";
-import openAPI from "@/services/openAPI";
-import bigInt from "big-integer";
-import * as bitcoin from "bitcoinjs-lib";
-import { useContext, useState } from "react";
-import { IFees } from "@/types/fees";
-import { WalletConnectContext } from "@/contexts/WalletConnectContext";
-import { WalletContextInterface } from "@/types/wallets";
+} from '@/components/ui/dialog';
+import Image from 'next/image';
+import Link from 'next/link';
+import UserForm from './userform';
+import StakingScreen from './stakingscreen';
+import openAPI from '@/services/openAPI';
+import bigInt from 'big-integer';
+import * as bitcoin from 'bitcoinjs-lib';
+import { useContext, useState } from 'react';
+import { IFees } from '@/types/fees';
+import { WalletConnectContext } from '@/contexts/WalletConnectContext';
+import { WalletContextInterface } from '@/types/wallets';
 import {
   calculateFee,
   satoshisToBTC,
@@ -22,13 +22,13 @@ import {
   utxoToInput,
   fromDecimalAmount,
   getAddressType,
-} from "@/utils";
-import { RuneId, Runestone } from "runestone-js";
-import { U128, U32, U64 } from "big-varuint-js";
-import { InscriptionUtxoDetail, TransactionData } from "@/types/transaction";
-import { BitcoinNetworkType, signTransaction } from "sats-connect";
-import CurrentStaked from "./CurrentStaked";
-import { usePathname } from "next/navigation";
+} from '@/utils';
+import { RuneId, Runestone } from 'runestone-js';
+import { U128, U32, U64 } from 'big-varuint-js';
+import { InscriptionUtxoDetail, TransactionData } from '@/types/transaction';
+import { BitcoinNetworkType, signTransaction } from 'sats-connect';
+import CurrentStaked from './CurrentStaked';
+import { usePathname } from 'next/navigation';
 
 interface DialogProps {
   inscriptionData: any;
@@ -49,10 +49,11 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
   const [formIsSubmitted, setFormIsSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [transactionId, setTransactionId] = useState<string>();
+  const [error, setError] = useState<string>();
 
   const fetchfees = async () => {
     const response = await fetch(
-      "https://mempool.space/api/v1/fees/recommended"
+      'https://mempool.space/api/v1/fees/recommended'
     );
     const data = await response.json();
     setFees(data);
@@ -60,13 +61,14 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
   const numberPattern = /\d+/;
   const extractedNumber = inscriptionData?.meta.name.match(numberPattern);
-  const pathName = usePathname().replace("/", "");
+  const pathName = usePathname().replace('/', '');
   const sigmaNo = extractedNumber ? parseInt(extractedNumber[0]) : null;
-  const sigmaPath = "https://ordinalsigmax.com/osx-gifs2/" + sigmaNo + ".gif";
-  const rugsPath = "https://ordinalsigmax.com/rugs/" + sigmaNo + ".png";
-  const ordinalPath = "https://ordinals.com/inscription/" + inscriptionData?.id;
+  const sigmaPath = 'https://ordinalsigmax.com/osx-gifs2/' + sigmaNo + '.gif';
+  const rugsPath = 'https://ordinalsigmax.com/rugs/' + sigmaNo + '.png';
+  const ordinalPath = 'https://ordinals.com/inscription/' + inscriptionData?.id;
 
-  const imagePath = pathName === "sigmax" ? sigmaPath : pathName === "rugs" ? rugsPath : "";
+  const imagePath =
+    pathName === 'sigmax' ? sigmaPath : pathName === 'rugs' ? rugsPath : '';
 
   const createPSBT = async (transactionDetail: TransactionData) => {
     const toSignInputsForUnisat = [];
@@ -81,9 +83,9 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
     let inscription_utxo: InscriptionUtxoDetail;
 
     const connectedOrdAddress =
-      connectedWallet === "unisat" ? connectedAddress : connectedTaprootAddress;
+      connectedWallet === 'unisat' ? connectedAddress : connectedTaprootAddress;
     const connectedOrdPubkey =
-      connectedWallet === "unisat" ? connectedPubkey : connectedTaprootPubkey;
+      connectedWallet === 'unisat' ? connectedPubkey : connectedTaprootPubkey;
 
     const inscriptionUTXO = await openAPI.getInscriptionUtxoDetail(
       transactionDetail.inscriptionId
@@ -111,7 +113,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
             : [],
       };
     } else {
-      throw new Error("Invalid inscriptionId");
+      throw new Error('Invalid inscriptionId');
     }
 
     let multiple = false;
@@ -122,7 +124,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
     if (multiple) {
       throw new Error(
-        "Multiple inscriptions are mixed together. Please split them first."
+        'Multiple inscriptions are mixed together. Please split them first.'
       );
     }
 
@@ -167,7 +169,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
     );
 
     if (rune_utxos.length == 0) {
-      throw new Error("Insufficient Runes balance");
+      throw new Error('Insufficient Runes balance');
     }
 
     const sortedRunesUtXOs = rune_utxos
@@ -201,7 +203,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
     //add inscription output and input
     inputs.push(utxoToInput(inscription_utxo, false));
 
-    if (connectedWallet === "unisat") {
+    if (connectedWallet === 'unisat') {
       toSignInputsForUnisat.push({
         index: 0,
         publicKey: inscription_utxo.pubkey,
@@ -215,7 +217,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
       if (v?.runes) {
         inputs.push(utxoToInput(v, false));
-        if (connectedWallet === "unisat") {
+        if (connectedWallet === 'unisat') {
           toSignInputsForUnisat.push({
             index: index + 1,
             publicKey: v.pubkey,
@@ -241,8 +243,8 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
     );
 
     const RUNEID = new RuneId(
-      new U64(BigInt(Number(transactionDetail.runeId.split(":")[0]))),
-      new U32(BigInt(Number(transactionDetail.runeId.split(":")[1])))
+      new U64(BigInt(Number(transactionDetail.runeId.split(':')[0]))),
+      new U32(BigInt(Number(transactionDetail.runeId.split(':')[1])))
     );
 
     const edicts = [];
@@ -288,7 +290,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
     btc_utxos_with_atomical.map((utxo: any, i: number) => {
       totalInputValue += utxo.satoshis;
       inputs.push(utxoToInput(utxo, false));
-      if (connectedWallet === "unisat") {
+      if (connectedWallet === 'unisat') {
         toSignInputsForUnisat.push({
           index: i + paddingSignatureLength,
           publicKey: utxo.pubkey,
@@ -349,7 +351,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
     const psbt = await toPsbt(inputs, outputs);
     const toSignInputs =
-      connectedWallet === "unisat"
+      connectedWallet === 'unisat'
         ? toSignInputsForUnisat
         : toSignInputsForXverse;
 
@@ -364,7 +366,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
           inscriptionId: inscriptionData?.id,
           outputValue: 546,
           runesAmount: stakeAmount,
-          runeId: runeData.runeid,
+          runeId: runeData.rune_id,
           divisibility: 0,
           feeRate: fee,
         };
@@ -374,23 +376,19 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      setError(error.toString());
       setLoading(false);
     }
   };
 
   const handleDeposit = async (psbt, toSignInputs) => {
     try {
-      if (connectedWallet === "unisat") {
+      if (connectedWallet === 'unisat') {
         await depositCoinonUnisat(psbt, toSignInputs);
-      } else if (connectedWallet === "xverse") {
+      } else if (connectedWallet === 'xverse') {
         await depositCoinonXverse(psbt, toSignInputs);
-      } else if (connectedWallet === "okx") {
-        // await depositCoinonOkx(psbtHex, toSignInputs);
-      } else if (connectedWallet === "leather") {
-        // await depositCoinonLeather(psbtHex, toSignInputs);
-      } else if (connectedWallet === "magiceden") {
-        // await depositCoinonMagic(psbtHex, toSignInputs);
+      } else if (connectedWallet === 'Magic Eden') {
+        await depositCoinMagicEden(psbt, toSignInputs);
       }
     } catch (error) {
       throw Error(error);
@@ -443,7 +441,45 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
           setFormIsSubmitted(true);
         },
         onCancel: () => {
-          alert("Request canceled");
+          alert('Request canceled');
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const depositCoinMagicEden = async (psbt, toSignInputs) => {
+    try {
+      const psbtBase64 = psbt.toBase64();
+
+      await signTransaction({
+        payload: {
+          network: {
+            type: BitcoinNetworkType.Mainnet,
+          },
+          psbtBase64: psbtBase64,
+          broadcast: true,
+          message: "tip the author! Don't worry this will not be broadcasted.",
+          inputsToSign: [
+            {
+              address: connectedAddress,
+              signingIndexes: toSignInputs[connectedAddress],
+            },
+            {
+              address: connectedTaprootAddress,
+              signingIndexes: toSignInputs[connectedTaprootAddress],
+            },
+          ],
+        },
+        onFinish: (response) => {
+          console.log(response);
+          const tx = response.txId;
+          setTransactionId(tx);
+          setFormIsSubmitted(true);
+        },
+        onCancel: () => {
+          alert('Request canceled');
         },
       });
     } catch (error) {
@@ -465,7 +501,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[765px]">
+      <DialogContent className="sm:max-w-[665px]">
         <div className="flex grid grid-cols-2 gap-x-6 gap-y-2">
           <div className="">
             <div className="flex justify-between">
@@ -521,44 +557,15 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
             </div>
           </div>
         </div>
-
-        {/* <div className="flex justify-between gap-6 items-center text-base">
-          <div className="flex space-y-3 flex-col">
-            <div className="flex justify-between items-center">
-              <span>{inscriptionData?.inscription_name}</span>
-              <Link href={ordinalPath} target="_blank" className="cursor-pointer">
-                <span className="lowercase hover:text-[#D9D9D9]">
-                  {`${inscriptionData?.inscription_id.slice(
-                  0,
-                  5
-                )}...${inscriptionData?.inscription_id.slice(-5)}`}</span>
-              </Link>
-            </div>
-
-            <Image
-              src={sigmaPath}
-              width={240}
-              height={240}
-              alt={inscriptionData?.inscription_name}
-            />
-
-            <div className="">
-              Currently staked: 
-            </div>
+        {error && (
+          <div className="border-[1px] border-red-500/50 bg-red-600/5 p-2 text-sm">
+            {error}
           </div>
+        )}
 
-          <div className="flex space-y-3 flex-col">
-            
-            {formIsSubmitted ? (
-              <StakingScreen />
-            ) : (
-              <UserForm fees={fees} setFormIsSubmitted={setFormIsSubmitted} />
-            )}
-          </div>
-        </div> */}
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-export default RuneDailog
+export default RuneDailog;

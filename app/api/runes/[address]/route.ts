@@ -7,7 +7,7 @@ import { PartnerCollections } from "@/data/collections";
 export const GET = async (req: NextRequest, { params }: any) => {
   const address = params.address;
 
-  let pathname : string;
+  let pathname: string;
   const headersList = headers();
   const referer = headersList.get("referer");
   if (referer) {
@@ -15,10 +15,14 @@ export const GET = async (req: NextRequest, { params }: any) => {
     pathname = request.nextUrl.pathname.replace("/", "");
   }
 
-  const currentCollection = PartnerCollections.filter((collection: any) => collection.slug === pathname)[0];
+  const currentCollection = PartnerCollections.filter(
+    (collection: any) => collection.slug === pathname
+  )[0];
 
   const runeSelected = currentCollection.rune_fullname;
-  
+
+  console.log(runeSelected, process.env.API_KEY, address);
+
   try {
     const response = await fetch(
       `https://api-mainnet.magiceden.dev/v2/ord/btc/runes/utxos/wallet/${address}?rune=${runeSelected}`,
@@ -32,7 +36,7 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const jsonRes = await response.json();
 
     // const runeList = jsonRes?.data.list.length ? jsonRes.data.list : null;
-    
+
     // const rune = runeList.filter((runes: any) => PartnerCollections.some(collection => collection.rune_id === runes.runeid) );
 
     // if(rune.length) {
@@ -46,11 +50,13 @@ export const GET = async (req: NextRequest, { params }: any) => {
     // );
 
     // const data = sigmaXRune.length ? sigmaXRune[0] : null;
-    
+
     // const data = runeList[0];
 
-    return NextResponse.json(jsonRes, { status: 200 });
-
+    return NextResponse.json(
+      { ...currentCollection, utxos: jsonRes.utxos },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
