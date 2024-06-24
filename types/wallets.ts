@@ -7,6 +7,7 @@ export type walletContextProviderProps = {
 export type connectedWallet = "unisat" | "xverse" | "Magic Eden";
 
 export interface WalletContextInterface {
+  compatibleWallets: any;
   connectedWallet: connectedWallet;
   connectedAddress: string | null;
   connectedPubkey: string | null;

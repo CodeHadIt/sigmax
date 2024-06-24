@@ -1,6 +1,8 @@
 import { Decimal } from "decimal.js";
 import * as bitcoin from "bitcoinjs-lib";
 import * as ecc from "tiny-secp256k1";
+import { Psbt } from 'bitcoinjs-lib';
+
 bitcoin.initEccLib(ecc);
 
 export enum AddressType {
@@ -10,6 +12,14 @@ export enum AddressType {
   P2SH_P2WPKH,
   M44_P2WPKH,
   M44_P2TR,
+}
+
+export function base64ToPsbt(base64) {
+  const psbResponse = Psbt.fromBase64(base64);
+  psbResponse.finalizeAllInputs();
+  const signedTx = psbResponse.extractTransaction();
+  const txHex = signedTx.toHex();
+  return txHex;
 }
 
 export function addressFormat(address: string, length: number): string {
@@ -90,7 +100,7 @@ export const calculateFee = (
   const inSize = 50;
   const outSize = 30;
 
-  const txSize = baseTxSize + vins * inSize + vouts * outSize + outSize; // Adjusted formula to account for all outputs
+  const txSize = (baseTxSize + vins * inSize + vouts * outSize + outSize) * 1.25; // Adjusted formula to account for all outputs
   const fee = txSize * recommendedFeeRate;
   return Number(fee.toFixed(0));
 };

@@ -4,10 +4,10 @@ import { PartnerCollections } from "@/data/collections";
 
 export const GET = async (req: NextRequest, { params }: any) => {
   const address = params.address;
-  
+
   const headersList = headers();
   const referer = headersList.get("referer");
-  let pathname : string;
+  let pathname: string;
 
   if (referer) {
     const request = new NextRequest(referer);
@@ -18,24 +18,43 @@ export const GET = async (req: NextRequest, { params }: any) => {
 
   const collectionSymbol = currentCollection.collection_symbol;
 
-  try {
-    const response = await fetch(
-      `https://api-mainnet.magiceden.dev/v2/ord/btc/tokens?limit=100&collectionSymbol=${collectionSymbol}&ownerAddress=${address}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.API_KEY}` as string,
-        },
-      }
-    );
-    const data = await response.json();
-    console.log(data);
+  const fetchTokens = async (offset = 0) => {
+    try {
+      const response = await fetch(
+        `https://api-mainnet.magiceden.dev/v2/ord/btc/tokens?limit=100&collectionSymbol=${collectionSymbol}&ownerAddress=${address}&offset=${offset}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.API_KEY}` as string,
+          },
+        }
+      );
+      const data = await response.json();
+      return data.tokens;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
 
-    return NextResponse.json(data, { status: 200 });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Error Getting Inscriptions" },
-      { status: 500 }
-    );
+  let allTokens: any[] = [];
+  let offset = 0;
+  let moreTokens = true;
+
+  while (moreTokens) {
+    const tokens = await fetchTokens(offset);
+    if (!tokens) {
+      return NextResponse.json(
+        { message: "Error Getting Inscriptions" },
+        { status: 500 }
+      );
+    }
+    allTokens = allTokens.concat(tokens);
+    if (tokens.length < 100) {
+      moreTokens = false;
+    } else {
+      offset += 100;
+    }
   }
+
+  return NextResponse.json({ tokens: allTokens }, { status: 200 });
 };

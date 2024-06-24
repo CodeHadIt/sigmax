@@ -11,7 +11,7 @@ import {
   GetAddressOptions,
   getAddress,
 } from 'sats-connect';
-import { useWallet, useWallets } from '@wallet-standard/react';
+import { useWallets } from '@wallet-standard/react';
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base';
 
 const SatsConnectNamespace = 'sats-connect:';
@@ -41,13 +41,10 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
   const [runeData, setRuneData] = useState<any>(null);
 
   const { wallets } = useWallets();
-  const { setWallet, wallet } = useWallet();
 
   const compatibleWallets = useMemo(() => {
     return wallets.filter(isSatsConnectCompatibleWallet);
   }, [wallets]);
-
-  console.log(compatibleWallets, wallets, 'isSatsConnectCompatibleWallet');
 
   const getInscription = async (address?: string) => {
     const response = await fetch(`/api/inscriptions/${address}`);
@@ -115,7 +112,8 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
       };
       console.log(addresses);
 
-      setConnectedAddress(addresses.ordinal);
+      // changing this effects PSBT creation
+      setConnectedAddress(addresses.payment);
       setConnectedPubkey(response.addresses[1].publicKey);
 
       setConnectedTaprootAddress(addresses.ordinal);
@@ -172,6 +170,7 @@ const WalletConnectContextProvider: FC<walletContextProviderProps> = ({
   return (
     <WalletConnectContext.Provider
       value={{
+        compatibleWallets,
         connectedWallet,
         connectedAddress,
         connectedPubkey,

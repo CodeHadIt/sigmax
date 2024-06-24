@@ -27,7 +27,7 @@ const Header = () => {
       </div>
 
       <div
-        className="white-border p-8 flex justify-between items-center bg-[#111111]"
+        className="blue-border text-base p-8 flex justify-between items-center bg-[#111111] min-w-[1020px]"
       >
         <div className="flex gap-6 justify-between items-center">
           <Image
@@ -39,7 +39,7 @@ const Header = () => {
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-white">Ordinal SigmaX</span>
+              <span className="text-[#FFE297]">Ordinal SigmaX</span>
               <Image
                 src={badge}
                 width={10}
@@ -47,14 +47,14 @@ const Header = () => {
                 alt="verification_badge"
               />
             </div>
-            <span className="text-white">0 Items</span>
+            <span className="text-[#FFE297]">0 Items</span>
           </div>
         </div>
 
         <div>
-          <span className="text-white">The.Sigma.Stone</span>
+          <span className="text-[#FFE297]">The.Sigma.Stone</span>
           <div className="space-x-2">
-            <span className="text-white">0</span>
+            <span className="text-[#FFE297]">0</span>
             <span>Σ</span>
           </div>
         </div>

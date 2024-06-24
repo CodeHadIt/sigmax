@@ -18,6 +18,7 @@ export const PartnerCollections = [
     rune_fullname: "RUGSTORICHES",
     rune_symbol: "💰",
     rune_id: "845808:3386",
+    rune_decimals: 0,
     image_path: "/rugs",
   },
 ];

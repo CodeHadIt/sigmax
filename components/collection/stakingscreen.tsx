@@ -10,7 +10,7 @@ const StakingScreen = ({ transactionId }: PageProps) => {
     <div className="space-y-8">
       <div className="space-y-1">
         <span>Staking in progress...</span>
-        <div className="w-full h-[45px] bg-[#222222] flex justify-center items-center">
+        <div className="w-full h-[45px] bg-[#222222] flex justify-center items-center hover:bg-[#FFE297] hover:text-[#222222]">
           <Link
             href={`https://mempool.space/tx/${transactionId}`}
             target="_blank"
@@ -21,8 +21,8 @@ const StakingScreen = ({ transactionId }: PageProps) => {
         <span>You Can Close This Screen.</span>
       </div>
 
-      <div className="flex flex-col gap-2 text-[12px] max-w-[400px]">
-        <span className="text-[#D9D9D9]">Please Note</span>
+      <div className="flex flex-col gap-2 text-[13px] max-w-[400px]">
+        <span className="text-[#FFE297]">Please Note</span>
         <span className="">
           Selling Either The Staked Runes Or The Attached Ordinal Will result In
           The Sale Of Both, As Staking Binds Them Together.

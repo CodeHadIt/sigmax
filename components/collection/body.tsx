@@ -1,12 +1,12 @@
-import { WalletConnectContext } from "@/contexts/WalletConnectContext";
-import { WalletContextInterface } from "@/types/wallets";
-import { useContext } from "react";
-import dynamic from "next/dynamic";
-import stakedIcon from "@/public/images/svg/stake-icon.svg";
-import Image from "next/image";
+import { WalletConnectContext } from '@/contexts/WalletConnectContext';
+import { WalletContextInterface } from '@/types/wallets';
+import { useContext, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import stakedIcon from '@/public/images/svg/stake-icon.svg';
+import Image from 'next/image';
 
 // import RuneDailog from "";
-const RuneDailog = dynamic(() => import("./runedailog"), {
+const RuneDailog = dynamic(() => import('./runedailog'), {
   loading: () => <p>Loading...</p>,
 });
 
@@ -14,6 +14,18 @@ const Body = () => {
   const { inscriptionData, runeData } = useContext(
     WalletConnectContext
   ) as WalletContextInterface;
+
+  const stakedRunesInfo = useMemo(() => {
+    if (inscriptionData.length && runeData?.utxos.length) {
+      const stakedUtxos = runeData?.utxos.filter((i) =>
+        inscriptionData.find((utxo: any) => utxo.output === i.location)
+      );
+      const sum = stakedUtxos.reduce((acc, utxo) => acc + utxo.balance, 0);
+      return { stakedUtxos, sum };
+    } else {
+      return { stakedUtxos: [], sum: 0 };
+    }
+  }, [inscriptionData, runeData?.utxos]);
 
   return (
     <div className="space-y-7 text-base">
@@ -26,6 +38,7 @@ const Body = () => {
           return hasUtxo ? (
             <div className="relative" key={index}>
               <RuneDailog
+                stakedRunesInfo={stakedRunesInfo}
                 inscriptionData={data}
                 runeBalance={hasUtxo.balance}
               />
@@ -36,7 +49,7 @@ const Body = () => {
               />
             </div>
           ) : (
-            <RuneDailog key={index} inscriptionData={data} />
+            <RuneDailog key={index} stakedRunesInfo={stakedRunesInfo} inscriptionData={data} />
           );
         })}
       </div>

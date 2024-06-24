@@ -1,12 +1,13 @@
-("");
-import React, { Dispatch, SetStateAction } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { formData } from "./userform";
-import { usePathname } from "next/navigation";
-import { PartnerCollections } from "@/data/collections";
+('');
+import React, { useState, Dispatch, SetStateAction } from 'react';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { formData } from './userform';
+import { usePathname } from 'next/navigation';
+import { PartnerCollections } from '@/data/collections';
 
 interface PageProps {
+  runeData: any;
   handleStake: Function;
   formData: formData;
   inscriptionData: any;
@@ -14,21 +15,23 @@ interface PageProps {
 }
 
 const StakeConfirmation = ({
+  runeData,
   handleStake,
   formData,
   inscriptionData,
   confirmAction,
 }: PageProps) => {
+  const [loading, setLoading] = useState(false);
 
-
-  const pathName = usePathname().replace("/", "");
+  const pathName = usePathname().replace('/', '');
   const collectionDetails = PartnerCollections.find(
     (collection: any) => collection.slug === pathName
   );
 
   const handleStaking = () => {
+    setLoading(true);
     const { stakeAmount, fee } = formData;
-    handleStake(stakeAmount, fee);
+    handleStake(stakeAmount * 10 ** runeData.rune_decimals, fee);
   };
 
   return (
@@ -37,14 +40,14 @@ const StakeConfirmation = ({
       <div className="space-y-2">
         <Input
           type="text"
-          placeholder={`${inscriptionData?.meta.name} ${formData.stakeAmount} ${collectionDetails.rune_symbol}`}
+          placeholder={`${inscriptionData?.meta.name} + ${formData.stakeAmount} ${collectionDetails.rune_symbol}`}
           id="stakeAmount"
           className="w-full]"
           readOnly
         />
         <div className="">
-          <span className="font-bold">Network Fees: </span>
-          <span>{formData.fee} Sats</span>
+          <span className="text-[13px]">Network Fees: </span>
+          <span className="text-[13px]">~{Math.round(formData.fee)} S/VB</span>
         </div>
         <div className="text-[13px] max-w-[600px]">
           By Signing This Transaction You Acknowledge That Selling Either The
@@ -62,8 +65,9 @@ const StakeConfirmation = ({
           <Button
             className="button-hover w-full cursor-pointer"
             onClick={() => handleStaking()}
+            disabled={loading}
           >
-            Sign And Pay
+            {loading ? 'Loading...' : 'Sign And Pay'}
           </Button>
         </div>
       </div>

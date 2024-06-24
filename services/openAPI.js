@@ -199,7 +199,7 @@ class OpenApiService {
   };
 
   pushTx = async (txHex) => {
-    const res = await fetch("/mempool/api/tx", {
+    const res = await fetch("/mempool/tx", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",

@@ -1,12 +1,9 @@
-("");
+import React, { useContext, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import React, { Dispatch, SetStateAction, useContext, useState } from 'react'
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -14,26 +11,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+} from '@/components/ui/form';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '../ui/input';
 import { WalletContextInterface } from '@/types/wallets';
 import { WalletConnectContext } from '@/contexts/WalletConnectContext';
 
-import { IFees } from "@/types/fees";
+import { IFees } from '@/types/fees';
 
-import { PartnerCollections } from "@/data/collections";
+import { PartnerCollections } from '@/data/collections';
 import StakeConfirmation from './stakeConfirmation';
-import { usePathname } from "next/navigation";
+import { usePathname } from 'next/navigation';
 
 interface PageProps {
+  stakedRunesInfo: any;
   fees: IFees | null;
   handleStake: Function;
   loading: boolean;
   inscriptionData: any;
 }
 
-type feeOptions = "slow" | "average" | "fast" | "none";
+type feeOptions = 'slow' | 'average' | 'fast' | 'none';
 export type formData = {
   stakeAmount: number;
   fee: number;
@@ -41,22 +39,28 @@ export type formData = {
 
 const FormSchema = z
   .object({
+    divisibility: z.coerce.number().optional(),
     runeBalance: z.coerce.number().optional(),
     stakeAmount: z.coerce.number().gt(0, {
-      message: "Amount must not be empty",
+      message: 'Amount must not be 0',
     }),
     fee: z.coerce.number().optional(),
-    type: z.enum(["slow", "average", "fast"], {
-      required_error: "Please select a fee.",
+    type: z.enum(['slow', 'average', 'fast'], {
+      required_error: 'Please select a fee.',
     }),
   })
-  .refine((data) => Number(data.stakeAmount) <= Number(data.runeBalance), {
-    message: "Stake amount cannot be larger than your balance",
-    path: ["stakeAmount"],
-  });
-
+  .refine(
+    (data) =>
+      Number(data.stakeAmount * 10 ** data.divisibility) <=
+      Number(data.runeBalance),
+    {
+      message: 'Rune amount cannot be larger than your balance',
+      path: ['stakeAmount'],
+    }
+  );
 
 const UserForm = ({
+  stakedRunesInfo,
   fees,
   handleStake,
   loading,
@@ -66,11 +70,11 @@ const UserForm = ({
     WalletConnectContext
   ) as WalletContextInterface;
 
-  const [selectedFee, setSelectedFee] = useState<feeOptions>("none");
+  const [selectedFee, setSelectedFee] = useState<feeOptions>('none');
   const [hasClickedConfirm, setHasClickedConfirm] = useState(false);
   const [formData, setFormData] = useState<formData | null>(null);
 
-  const pathName = usePathname().replace("/", "");
+  const pathName = usePathname().replace('/', '');
   const collectionDetails = PartnerCollections.find(
     (collection: any) => collection.slug === pathName
   );
@@ -83,7 +87,8 @@ const UserForm = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      runeBalance: runeBalance,
+      divisibility: runeData.rune_decimals,
+      runeBalance: runeBalance - stakedRunesInfo.sum,
       stakeAmount: undefined,
       fee: 0,
     },
@@ -96,11 +101,11 @@ const UserForm = ({
     // handleStake(stakeAmount, fee);
   };
 
-
   return (
     <div className="w-full h-full flex flex-col justify-between">
       {hasClickedConfirm ? (
         <StakeConfirmation
+          runeData={runeData}
           handleStake={handleStake}
           formData={formData}
           inscriptionData={inscriptionData}
@@ -136,7 +141,13 @@ const UserForm = ({
                     <span
                       className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
                       onClick={() =>
-                        form.setValue("stakeAmount", Number(runeBalance/10**collectionDetails?.rune_decimals))
+                        form.setValue(
+                          'stakeAmount',
+                          Number(
+                            (runeBalance - stakedRunesInfo.sum) /
+                              10 ** collectionDetails?.rune_decimals
+                          )
+                        )
                       }
                     >
                       Max
@@ -145,7 +156,10 @@ const UserForm = ({
                   <div className="flex justify-between">
                     <span>Available</span>
                     <div className="space-x-2">
-                      <span className="">{runeBalance/10**collectionDetails?.rune_decimals}</span>
+                      <span className="">
+                        {(runeBalance - stakedRunesInfo.sum) /
+                          10 ** collectionDetails?.rune_decimals}
+                      </span>
                       <span>{collectionDetails?.rune_symbol}</span>
                     </div>
                   </div>
@@ -161,7 +175,7 @@ const UserForm = ({
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel className="text-[#FFE297]">
-                    Select A Fee Rate
+                    Select Transaction Speed
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
@@ -171,20 +185,20 @@ const UserForm = ({
                     >
                       <FormItem
                         className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === "slow" && "bg-[#FFE297]"
+                          selectedFee === 'slow' && 'bg-[#FFE297]'
                         }`}
                       >
                         <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                           <span>Slow</span>
-                          <span>{fees?.hourFee} S/VB</span>
+                          {/* <span>~ {fees?.hourFee} S/VB</span> */}
                         </FormLabel>
                         <FormControl className="z-10 cursor-pointer">
                           <RadioGroupItem
                             value="slow"
                             className="w-full h-[50px] rounded-none border-none"
                             onClick={() => {
-                              form.setValue("fee", fees?.hourFee);
-                              setSelectedFee("slow");
+                              form.setValue('fee', fees?.hourFee);
+                              setSelectedFee('slow');
                             }}
                           />
                         </FormControl>
@@ -192,20 +206,23 @@ const UserForm = ({
 
                       <FormItem
                         className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === "average" && "bg-[#FFE297]"
+                          selectedFee === 'average' && 'bg-[#FFE297]'
                         }`}
                       >
                         <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                           <span>Avg</span>
-                          <span>{fees?.halfHourFee} S/VB</span>
+                          {/* <span>~{Math.round(fees?.fastestFee * 1.1)} S/VB</span> */}
                         </FormLabel>
                         <FormControl className="z-10 cursor-pointer">
                           <RadioGroupItem
                             value="average"
                             className="w-full h-[50px] rounded-none border-none"
                             onClick={() => {
-                              form.setValue("fee", fees?.halfHourFee);
-                              setSelectedFee("average");
+                              form.setValue(
+                                'fee',
+                                Math.round(fees?.halfHourFee * 1.1)
+                              );
+                              setSelectedFee('average');
                             }}
                           />
                         </FormControl>
@@ -213,20 +230,23 @@ const UserForm = ({
 
                       <FormItem
                         className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === "fast" && "bg-[#FFE297]"
+                          selectedFee === 'fast' && 'bg-[#FFE297]'
                         }`}
                       >
                         <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
                           <span>Fast</span>
-                          <span>{fees?.fastestFee} S/VB</span>
+                          {/* <span>~{Math.round(fees?.fastestFee * 1.2)} S/VB</span> */}
                         </FormLabel>
-                        <FormControl className="z-10 cursor-pointer focus:bg-[#D9D9D9}">
+                        <FormControl className="z-10 cursor-pointer">
                           <RadioGroupItem
                             value="fast"
                             className="w-full h-[50px] rounded-none border-none"
                             onClick={() => {
-                              form.setValue("fee", fees?.fastestFee);
-                              setSelectedFee("fast");
+                              form.setValue(
+                                'fee',
+                                Math.round(fees?.fastestFee * 1.2)
+                              );
+                              setSelectedFee('fast');
                             }}
                           />
                         </FormControl>
@@ -237,9 +257,9 @@ const UserForm = ({
                   <div className="flex gap-2">
                     <Button
                       type="submit"
-                      className="button-hover w-full cursor-pointer"
+                      className="w-full cursor-pointer hover:bg-[#FFE297] hover:text-[#222222]"
                     >
-                      {loading ? "Staking..." : "Stake"}
+                      {loading ? 'Staking...' : 'Stake'}
                     </Button>
                     <Button
                       className="w-full hover:bg-unset hover:text-unset"
@@ -260,4 +280,4 @@ const UserForm = ({
   );
 };
 
-export default UserForm
+export default UserForm;

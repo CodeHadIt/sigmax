@@ -33,12 +33,12 @@ const Header = () => {
       <div className="flex grid grid-cols-3">
         <div className="flex justify-start">
           <h3 className="text-base">
-            Collections / {collectionDetails?.collection_name}
+            <Link href="/">Collections</Link> / {collectionDetails?.collection_name}
           </h3>
         </div>
         <div className="flex justify-center">
           <Link href="/" className="cursor-pointer">
-            <Image src={Logo} width={144} height={31} alt="Runestake Logo" />
+            <Image src={Logo} width={144} height={31} alt="RuneStake Logo" />
           </Link>
         </div>
         <div className="flex justify-end">

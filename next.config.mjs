@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -35,6 +36,10 @@ const nextConfig = {
       {
         source: "/magiceden/:slug*",
         destination: "https://api-mainnet.magiceden.io/:slug*",
+      },
+      {
+        source: "/mempool/:slug*",
+        destination: "https://mempool.space/api/:slug*",
       },
     ];
   },

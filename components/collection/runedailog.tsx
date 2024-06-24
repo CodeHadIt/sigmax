@@ -10,6 +10,7 @@ import UserForm from './userform';
 import StakingScreen from './stakingscreen';
 import openAPI from '@/services/openAPI';
 import bigInt from 'big-integer';
+import { usePathname } from 'next/navigation';
 import * as bitcoin from 'bitcoinjs-lib';
 import { useContext, useState } from 'react';
 import { IFees } from '@/types/fees';
@@ -20,23 +21,31 @@ import {
   satoshisToBTC,
   toPsbt,
   utxoToInput,
-  fromDecimalAmount,
   getAddressType,
+  base64ToPsbt,
 } from '@/utils';
 import { RuneId, Runestone } from 'runestone-js';
 import { U128, U32, U64 } from 'big-varuint-js';
 import { InscriptionUtxoDetail, TransactionData } from '@/types/transaction';
 import { BitcoinNetworkType, signTransaction } from 'sats-connect';
 import CurrentStaked from './CurrentStaked';
-import { usePathname } from 'next/navigation';
+import type { WalletWithFeatures } from '@wallet-standard/base';
 
 interface DialogProps {
+  stakedRunesInfo: any;
   inscriptionData: any;
   runeBalance?: string;
 }
 
-const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
+const SatsConnectNamespace = 'sats-connect:';
+
+const RuneDailog = ({
+  stakedRunesInfo,
+  inscriptionData,
+  runeBalance,
+}: DialogProps) => {
   const {
+    compatibleWallets,
     connectedAddress,
     runeData,
     connectedPubkey,
@@ -63,8 +72,9 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
   const extractedNumber = inscriptionData?.meta.name.match(numberPattern);
   const pathName = usePathname().replace('/', '');
   const sigmaNo = extractedNumber ? parseInt(extractedNumber[0]) : null;
-  const sigmaPath = 'https://ordinalsigmax.com/osx-gifs2/' + sigmaNo + '.gif';
-  const rugsPath = 'https://ordinalsigmax.com/rugs/' + sigmaNo + '.png';
+  const sigmaPath =
+    'https://ewr1.vultrobjects.com/osx2/gif/' + sigmaNo + '.gif';
+  const rugsPath = 'https://ewr1.vultrobjects.com/rugs/img/' + sigmaNo + '.png';
   const ordinalPath = 'https://ordinals.com/inscription/' + inscriptionData?.id;
 
   const imagePath =
@@ -188,13 +198,9 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
         };
       })
       .sort((a, b) => b?.runes[0].amount - a?.runes[0].amount);
+
     //add runes input and output
-    totalRuneAmount = bigInt(
-      fromDecimalAmount(
-        transactionDetail.runesAmount.toString(),
-        transactionDetail.divisibility
-      )
-    );
+    totalRuneAmount = bigInt(Math.floor(transactionDetail.runesAmount))
 
     let shouldStop = false;
     let inputs = [];
@@ -216,30 +222,35 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
       if (shouldStop) return;
 
       if (v?.runes) {
-        inputs.push(utxoToInput(v, false));
-        if (connectedWallet === 'unisat') {
-          toSignInputsForUnisat.push({
-            index: index + 1,
-            publicKey: v.pubkey,
-          });
-        } else {
-          toSignInputsForXverse[connectedTaprootAddress].push(index + 1);
-        }
-        totalInputValue += v.satoshis;
-
-        v?.runes.forEach((w: any) => {
-          if (w.runeid === transactionDetail.runeId) {
-            fromRuneAmount = fromRuneAmount.plus(bigInt(w.amount));
-            if (fromRuneAmount.gt(totalRuneAmount)) {
-              shouldStop = true; // Set shouldStop to true to indicate to stop looping
-            }
+        const isStaked = stakedRunesInfo.stakedUtxos.filter(
+          (i) => `${v.txid}:${v.vout}` === i.location
+        );
+        if (isStaked.length === 0) {
+          inputs.push(utxoToInput(v, false));
+          if (connectedWallet === 'unisat') {
+            toSignInputsForUnisat.push({
+              index: index + 1,
+              publicKey: v.pubkey,
+            });
+          } else {
+            toSignInputsForXverse[connectedTaprootAddress].push(index + 1);
           }
-        });
+          totalInputValue += v.satoshis;
+
+          v?.runes.forEach((w: any) => {
+            if (w.runeid === transactionDetail.runeId) {
+              fromRuneAmount = fromRuneAmount.plus(bigInt(w.amount));
+              if (fromRuneAmount.gt(totalRuneAmount)) {
+                shouldStop = true; // Set shouldStop to true to indicate to stop looping
+              }
+            }
+          });
+        }
       }
     });
 
     const changedRuneAmount = fromRuneAmount.minus(
-      bigInt(Number(totalRuneAmount))
+      bigInt(Math.floor(Number(totalRuneAmount)))
     );
 
     const RUNEID = new RuneId(
@@ -251,14 +262,14 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
     edicts.push({
       id: RUNEID,
-      amount: new U128(BigInt(Number(totalRuneAmount))),
+      amount: new U128(BigInt(Math.floor(Number(totalRuneAmount)))),
       output: new U32(BigInt(1)),
     });
 
     if (changedRuneAmount.gt(0)) {
       const edit = {
         id: RUNEID,
-        amount: new U128(BigInt(Number(changedRuneAmount))),
+        amount: new U128(BigInt(Math.floor(Number(changedRuneAmount)))),
         output: new U32(BigInt(2)),
       };
       edicts.push(edit);
@@ -317,7 +328,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
     if (totalInputValue <= totalOutputValue) {
       throw new Error(
-        "Your wallet address doesn't have enough funds to deposit your brc20 token."
+        "Your wallet address doesn't have enough funds to stake your Rune token."
       );
     }
 
@@ -337,7 +348,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
 
     if (changeValue < 0) {
       throw new Error(
-        `Your wallet address doesn't have enough funds to deposit your brc20 token.
+        `Your wallet address doesn't have enough funds to stake your Rune token.
             You have: ${satoshisToBTC(totalInputValue)}
             Required: ${satoshisToBTC(totalInputValue - changeValue)}
             Missing: ${satoshisToBTC(-changeValue)}`
@@ -416,6 +427,9 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
       const psbtBase64 = psbt.toBase64();
 
       await signTransaction({
+        getProvider: async () => {
+          return window.XverseProviders.BitcoinProvider;
+        },
         payload: {
           network: {
             type: BitcoinNetworkType.Mainnet,
@@ -452,8 +466,18 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
   const depositCoinMagicEden = async (psbt, toSignInputs) => {
     try {
       const psbtBase64 = psbt.toBase64();
+      console.log('inputs:', toSignInputs);
+      console.log('psbt', psbt);
+      const magicEdenWalletProvider = compatibleWallets.filter(
+        (w) => w.name.toLocaleLowerCase() === 'Magic Eden'.toLocaleLowerCase()
+      );
 
       await signTransaction({
+        getProvider: async () => {
+          return (
+            magicEdenWalletProvider[0] as unknown as WalletWithFeatures<any>
+          ).features[SatsConnectNamespace]?.provider;
+        },
         payload: {
           network: {
             type: BitcoinNetworkType.Mainnet,
@@ -472,9 +496,11 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
             },
           ],
         },
-        onFinish: (response) => {
-          console.log(response);
-          const tx = response.txId;
+        onFinish: async (response) => {
+          const hex = base64ToPsbt(response.psbtBase64);
+          const hexResponse = await openAPI.pushTx(hex);
+          const tx = hexResponse.txId;
+          console.log(hexResponse);
           setTransactionId(tx);
           setFormIsSubmitted(true);
         },
@@ -540,6 +566,7 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
                 <StakingScreen transactionId={transactionId} />
               ) : (
                 <UserForm
+                  stakedRunesInfo={stakedRunesInfo}
                   fees={fees}
                   handleStake={handleStake}
                   loading={loading}
@@ -562,7 +589,6 @@ const RuneDailog = ({ inscriptionData, runeBalance }: DialogProps) => {
             {error}
           </div>
         )}
-
       </DialogContent>
     </Dialog>
   );

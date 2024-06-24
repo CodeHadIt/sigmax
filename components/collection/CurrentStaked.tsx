@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from "react";
-import openAPI from "@/services/openAPI";
+import React, { useContext } from 'react';
+import { WalletConnectContext } from '@/contexts/WalletConnectContext';
+import { WalletContextInterface } from '@/types/wallets';
 
 interface PageProps {
   inscriptionId: string;
   currentStake?: string;
 }
 
-const CurrentStaked = ({ inscriptionId, currentStake }: PageProps) => {
-  const [currentStaked, setCurrentStaked] = useState("");
+const CurrentStaked = ({ currentStake }: PageProps) => {
+  const { runeData } = useContext(
+    WalletConnectContext
+  ) as WalletContextInterface;
 
-  useEffect(() => {
-    // const getCurrentStaking = async () => {
-    //   //   const res = await openAPI.getInscriptionUtxoDetail(inscriptionId);
-    //   const res = await fetch(
-    //     "https://ordinals.com/content/c33de8908d4fc828f761306daf7586c611c8fa9620848605e421113bc48ad032i0"
-    //   );
-    //   console.log(res);
-    // };
-    // getCurrentStaking();
-  }, []);
+  const formattedStake = currentStake
+    ? (parseFloat(currentStake) * 10 ** -runeData.rune_decimals).toFixed(runeData.rune_decimals)
+    : 'N/A';
 
-  return <div className="">Currently staked: {currentStake}</div>;
+  return <div className="">Currently staked: {formattedStake}</div>;
 };
 
 export default CurrentStaked;
