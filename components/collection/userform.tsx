@@ -21,6 +21,7 @@ import { IFees } from '@/types/fees';
 
 import { PartnerCollections } from '@/data/collections';
 import StakeConfirmation from './stakeConfirmation';
+import SelectFees from './selectFees';
 import { usePathname } from 'next/navigation';
 
 interface PageProps {
@@ -115,7 +116,7 @@ const UserForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full h-full flex flex-col justify-between"
+            className="w-full h-full flex flex-col justify-between gap-5"
           >
             <FormField
               control={form.control}
@@ -142,7 +143,7 @@ const UserForm = ({
                       className="absolute top-[25%] left-[88%] text-[#FFE297] cursor-pointer"
                       onClick={() =>
                         form.setValue(
-                          'stakeAmount',
+                          "stakeAmount",
                           Number(
                             (runeBalance - stakedRunesInfo.sum) /
                               10 ** collectionDetails?.rune_decimals
@@ -183,83 +184,36 @@ const UserForm = ({
                       defaultValue={field.value}
                       className="flex justify-between"
                     >
-                      <FormItem
-                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === 'slow' && 'bg-[#FFE297]'
-                        }`}
-                      >
-                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                          <span>Slow</span>
-                          {/* <span>~ {fees?.hourFee} S/VB</span> */}
-                        </FormLabel>
-                        <FormControl className="z-10 cursor-pointer">
-                          <RadioGroupItem
-                            value="slow"
-                            className="w-full h-[50px] rounded-none border-none"
-                            onClick={() => {
-                              form.setValue('fee', fees?.hourFee);
-                              setSelectedFee('slow');
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
-
-                      <FormItem
-                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === 'average' && 'bg-[#FFE297]'
-                        }`}
-                      >
-                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                          <span>Avg</span>
-                          {/* <span>~{Math.round(fees?.fastestFee * 1.1)} S/VB</span> */}
-                        </FormLabel>
-                        <FormControl className="z-10 cursor-pointer">
-                          <RadioGroupItem
-                            value="average"
-                            className="w-full h-[50px] rounded-none border-none"
-                            onClick={() => {
-                              form.setValue(
-                                'fee',
-                                Math.round(fees?.halfHourFee * 1.1)
-                              );
-                              setSelectedFee('average');
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
-
-                      <FormItem
-                        className={`flex flex-col items-center justify-center space-y-0 relative w-full h-[45px] bg-[#222222] hover:bg-[#FFE297] ${
-                          selectedFee === 'fast' && 'bg-[#FFE297]'
-                        }`}
-                      >
-                        <FormLabel className="font-normal absolute flex flex-col inset-0 items-center justify-center gap-[6px]">
-                          <span>Fast</span>
-                          {/* <span>~{Math.round(fees?.fastestFee * 1.2)} S/VB</span> */}
-                        </FormLabel>
-                        <FormControl className="z-10 cursor-pointer">
-                          <RadioGroupItem
-                            value="fast"
-                            className="w-full h-[50px] rounded-none border-none"
-                            onClick={() => {
-                              form.setValue(
-                                'fee',
-                                Math.round(fees?.fastestFee * 1.2)
-                              );
-                              setSelectedFee('fast');
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
+                      <SelectFees
+                        feeType="fast"
+                        selectedFee={selectedFee}
+                        fees={fees}
+                        form={form}
+                        setSelectedFee={setSelectedFee}
+                      />
+                      <SelectFees
+                        feeType="average"
+                        selectedFee={selectedFee}
+                        fees={fees}
+                        form={form}
+                        setSelectedFee={setSelectedFee}
+                      />
+                      <SelectFees
+                        feeType="slow"
+                        selectedFee={selectedFee}
+                        fees={fees}
+                        form={form}
+                        setSelectedFee={setSelectedFee}
+                      />
                     </RadioGroup>
                   </FormControl>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 pt-2 md:pt-0">
                     <Button
                       type="submit"
                       className="w-full cursor-pointer hover:bg-[#FFE297] hover:text-[#222222]"
                     >
-                      {loading ? 'Staking...' : 'Stake'}
+                      {loading ? "Staking..." : "Stake"}
                     </Button>
                     <Button
                       className="w-full hover:bg-unset hover:text-unset"
@@ -268,7 +222,6 @@ const UserForm = ({
                       Unstake
                     </Button>
                   </div>
-
                   <FormMessage />
                 </FormItem>
               )}

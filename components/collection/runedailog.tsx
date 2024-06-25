@@ -30,6 +30,7 @@ import { InscriptionUtxoDetail, TransactionData } from '@/types/transaction';
 import { BitcoinNetworkType, signTransaction } from 'sats-connect';
 import CurrentStaked from './CurrentStaked';
 import type { WalletWithFeatures } from '@wallet-standard/base';
+import { useMediaQuery } from "react-responsive";
 
 interface DialogProps {
   stakedRunesInfo: any;
@@ -59,6 +60,8 @@ const RuneDailog = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [transactionId, setTransactionId] = useState<string>();
   const [error, setError] = useState<string>();
+
+  const isLargeScreens = useMediaQuery({ query: "(min-width: 768px)" });
 
   const fetchfees = async () => {
     const response = await fetch(
@@ -527,40 +530,89 @@ const RuneDailog = ({
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[665px]">
-        <div className="flex grid grid-cols-2 gap-x-6 gap-y-2">
-          <div className="">
-            <div className="flex justify-between">
-              <span>{inscriptionData?.meta.name}</span>
-              <Link
-                href={ordinalPath}
-                target="_blank"
-                className="cursor-pointer"
-              >
-                <span className="lowercase hover:text-[#FFE297]">
-                  {`${inscriptionData?.id.slice(
-                    0,
-                    5
-                  )}...${inscriptionData?.id.slice(-5)}`}
-                </span>
-              </Link>
+      <DialogContent className="max-w-[400px] md:max-w-[665px]">
+        {isLargeScreens ? (
+          <div className="flex grid grid-cols-2 gap-x-6 gap-y-2">
+            <div className="">
+              <div className="flex justify-between">
+                <span>{inscriptionData?.meta.name}</span>
+                <Link
+                  href={ordinalPath}
+                  target="_blank"
+                  className="cursor-pointer"
+                >
+                  <span className="lowercase hover:text-[#FFE297]">
+                    {`${inscriptionData?.id.slice(
+                      0,
+                      5
+                    )}...${inscriptionData?.id.slice(-5)}`}
+                  </span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="">
+              <DialogClose>
+                <span className="fixed top-10 right-0 pr-10  hover:text-[#FFE297]">{`<ESC>`}</span>
+              </DialogClose>
+            </div>
+            <div className="">
+              <Image
+                src={imagePath}
+                width={240}
+                height={240}
+                className="w-full"
+                alt={inscriptionData?.meta.name}
+              />
+            </div>
+            <div className="">
+              <div className="flex h-full flex-col justify-between">
+                {formIsSubmitted ? (
+                  <StakingScreen transactionId={transactionId} />
+                ) : (
+                  <UserForm
+                    stakedRunesInfo={stakedRunesInfo}
+                    fees={fees}
+                    handleStake={handleStake}
+                    loading={loading}
+                    inscriptionData={inscriptionData}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="">
+              <div className="">
+                <CurrentStaked
+                  inscriptionId={inscriptionData?.id}
+                  currentStake={runeBalance}
+                />
+              </div>
             </div>
           </div>
-          <div className="">
-            <DialogClose>
-              <span className="fixed top-10 right-0 pr-10  hover:text-[#FFE297]">{`<ESC>`}</span>
-            </DialogClose>
-          </div>
-          <div className="">
-            <Image
-              src={imagePath}
-              width={240}
-              height={240}
-              className="w-full"
-              alt={inscriptionData?.meta.name}
-            />
-          </div>
-          <div className="">
+        ) : (
+          <div className="flex flex-col justify-between gap-4">
+            <div className="flex justify-between items-stretch">
+              <Image
+                src={imagePath}
+                width={70}
+                height={70}
+                // className="w-full"
+                alt={inscriptionData?.meta.name}
+              />
+
+              <div className="flex flex-col justify-between">
+                <span>{inscriptionData?.meta.name}</span>
+                <CurrentStaked
+                  inscriptionId={inscriptionData?.id}
+                  currentStake={runeBalance}
+                />
+              </div>
+
+              <DialogClose>
+                <span className="fixed top-10 right-0 pr-10  hover:text-[#FFE297]">{`<ESC>`}</span>
+              </DialogClose>
+            </div>
+
             <div className="flex h-full flex-col justify-between">
               {formIsSubmitted ? (
                 <StakingScreen transactionId={transactionId} />
@@ -575,15 +627,7 @@ const RuneDailog = ({
               )}
             </div>
           </div>
-          <div className="">
-            <div className="">
-              <CurrentStaked
-                inscriptionId={inscriptionData?.id}
-                currentStake={runeBalance}
-              />
-            </div>
-          </div>
-        </div>
+        )}
         {error && (
           <div className="border-[1px] border-red-500/50 bg-red-600/5 p-2 text-sm">
             {error}
