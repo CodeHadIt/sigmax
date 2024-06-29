@@ -36,8 +36,8 @@ const Header = () => {
       <div className="flex justify-between w-full">
         <div className="flex justify-start">
           <h3 className="text-base">
-            <Link href="/">Collections</Link> /{" "}
-            {collectionDetails?.collection_name}
+            <Link href="/">Collections</Link><span className="hidden md:inline"> /{" "}
+            {collectionDetails?.collection_name}</span>
           </h3>
         </div>
         {isLargeScreens && (

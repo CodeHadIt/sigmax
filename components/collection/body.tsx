@@ -29,8 +29,8 @@ const Body = () => {
 
   return (
     <div className="space-y-7 text-base">
-      <span>Select An Item to Stake Your runes With.</span>
-      <div className="grid grid-cols-7 gap-4">
+      <span className="text-center">Select An Item to Stake Your runes With.</span>
+      <div className="grid grid-cols-2 md:grid-cols-7 gap-4 justify-items-center mx-auto">
         {inscriptionData?.map((data: any, index: any) => {
           const hasUtxo = runeData?.utxos.find(
             (utxo: any) => utxo.location === data.output
@@ -45,7 +45,7 @@ const Body = () => {
               <Image
                 src={stakedIcon}
                 alt="staking_icon"
-                className="absolute top-3 right-3"
+                className="absolute top-3 left-3 md:right-3"
               />
             </div>
           ) : (

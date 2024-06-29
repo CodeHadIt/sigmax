@@ -4,7 +4,7 @@ import Body from './body'
 
 const CollectionOverview = () => {
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 w-full">
       <Header />
       <Body />
     </div>

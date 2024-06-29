@@ -21,8 +21,6 @@ export const GET = async (req: NextRequest, { params }: any) => {
 
   const runeSelected = currentCollection.rune_fullname;
 
-  console.log(runeSelected, process.env.API_KEY, address);
-
   try {
     const response = await fetch(
       `https://api-mainnet.magiceden.dev/v2/ord/btc/runes/utxos/wallet/${address}?rune=${runeSelected}`,

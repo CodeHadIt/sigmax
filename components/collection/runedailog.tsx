@@ -591,7 +591,7 @@ const RuneDailog = ({
           </div>
         ) : (
           <div className="flex flex-col justify-between gap-4">
-            <div className="flex justify-between items-stretch">
+            <div className="flex items-stretch">
               <Image
                 src={imagePath}
                 width={70}
@@ -600,8 +600,20 @@ const RuneDailog = ({
                 alt={inscriptionData?.meta.name}
               />
 
-              <div className="flex flex-col justify-between">
+              <div className="flex flex-col pl-5">
                 <span>{inscriptionData?.meta.name}</span>
+                <Link
+                  href={ordinalPath}
+                  target="_blank"
+                  className="cursor-pointer"
+                >
+                  <span className="lowercase hover:text-[#FFE297]">
+                    {`${inscriptionData?.id.slice(
+                      0,
+                      5
+                    )}...${inscriptionData?.id.slice(-5)}`}
+                  </span>
+                </Link>
                 <CurrentStaked
                   inscriptionId={inscriptionData?.id}
                   currentStake={runeBalance}
